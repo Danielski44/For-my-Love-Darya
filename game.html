@@ -5,178 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sammle Momente</title>
     <style>
-        /* Verhindert das Scrollen der ganzen Seite beim Ziehen und Zoom auf Touchgeräten */
         body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: sans-serif; text-align: center; touch-action: none; }
+        h2 { color: #ff4d6d; font-size: 2rem; margin-top: 20px; z-index: 50; position: relative; pointer-events: none; }
         
-        h2 { color: #ff4d6d; font-size: 2rem; margin-top: 20px; pointer-events: none; user-select: none; position: relative; z-index: 10; }
+        .game-area { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
 
-        .moment-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        /* Bilder: Groß (180px), verschiebbar, sanft atmend */
         .moment {
-            position: absolute; 
-            width: 180px;
-            height: 180px; 
-            object-fit: cover; 
-            border-radius: 20px; 
-            border: 5px solid white; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            cursor: grab; /* Zeigt Hand-Cursor an */
-            transition: transform 0.1s, opacity 0.4s; 
-            /* Sanfte "Atem"-Bewegung */
-            animation: breathe 5s infinite ease-in-out alternate;
-            touch-action: none; /* Wichtig für Drag & Drop auf Handys */
+            position: absolute; width: 180px; height: 180px; object-fit: cover; 
+            border-radius: 20px; border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            cursor: grab; user-select: none; touch-action: none; transition: opacity 0.4s;
         }
 
-        /* Aussehen, wenn man das Bild gerade festhält */
-        .moment.dragging {
-            cursor: grabbing;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            transform: scale(1.1) !important; /* Etwas größer beim Halten */
-            z-index: 1000; /* Immer im Vordergrund beim Ziehen */
-            animation: none; /* Keine Atmung beim Ziehen */
-            transition: none; /* Direkte Reaktion ohne Verzögerung */
+        /* Turbo-Animationen */
+        .fast1 { animation: wild1 5s infinite linear; }
+        .fast2 { animation: wild2 6s infinite linear; }
+        .fast3 { animation: wild3 7s infinite linear; }
+
+        @keyframes wild1 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(70vw, 20vh) rotate(90deg); }
+            50% { transform: translate(20vw, 70vh) rotate(180deg); }
+            75% { transform: translate(-20vw, 30vh) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
         }
 
-        .found { opacity: 0; transform: scale(0) !important; pointer-events: none; transition: 0.5s all; }
-        
-        /* Animation: Sanftes Atmen auf der Stelle */
-        @keyframes breathe { 
-            0% { transform: translateY(0) scale(1); } 
-            100% { transform: translateY(-8px) scale(1.03); } 
+        @keyframes wild2 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-50vw, 60vh) rotate(-120deg); }
+            66% { transform: translate(40vw, -10vh) rotate(120deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
         }
+
+        @keyframes wild3 {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(50vw, 50vh) scale(1.2); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .dragging { cursor: grabbing; z-index: 1000 !important; animation: none !important; transform: scale(1.1) !important; }
+        .found { opacity: 0; transform: scale(0) !important; pointer-events: none; }
 
         #next-btn {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #ff4d6d; color: white; padding: 25px 50px; border-radius: 60px;
-            text-decoration: none; font-size: 1.8rem; z-index: 2000; box-shadow: 0 10px 30px rgba(255, 77, 109, 0.4);
+            background: #ff4d6d; color: white; padding: 25px 60px; border-radius: 60px;
+            text-decoration: none; font-size: 2rem; z-index: 2000; box-shadow: 0 15px 40px rgba(255, 77, 109, 0.5);
         }
     </style>
 </head>
 <body>
-    <h2>Finde alle 10 Bilder! (<span id="count">0</span>/10)</h2>
+    <h2>Finde alle 10 Momente! (<span id="count">0</span>/10)</h2>
     
-    <div class="moment-container" id="game-area">
-        <img src="1.jpeg" class="moment" style="top:10%; left:5%;">
-        <img src="2.jpeg" class="moment" style="top:20%; left:60%;">
-        <img src="3.jpeg" class="moment" style="top:50%; left:10%;">
-        <img src="4.jpeg" class="moment" style="top:65%; left:65%;">
-        <img src="5.jpeg" class="moment" style="top:35%; left:35%;">
-        <img src="6.jpeg" class="moment" style="top:5%; left:45%;">
-        <img src="7.jpeg" class="moment" style="top:60%; left:80%;">
-        <img src="8.jpeg" class="moment" style="top:80%; left:20%;">
-        <img src="9.jpeg" class="moment" style="top:5%; left:75%;">
-        <img src="10.jpeg" class="moment" style="top:35%; left:80%;">
+    <div class="game-area">
+        <img src="1.jpeg" class="moment fast1" style="top:20%; left:20%;" onpointerdown="startDrag(event)">
+        <img src="2.jpeg" class="moment fast2" style="top:40%; left:70%;" onpointerdown="startDrag(event)">
+        <img src="3.jpeg" class="moment fast3" style="top:10%; left:50%;" onpointerdown="startDrag(event)">
+        <img src="4.jpeg" class="moment fast1" style="top:70%; left:10%;" onpointerdown="startDrag(event)">
+        <img src="5.jpeg" class="moment fast2" style="top:50%; left:30%;" onpointerdown="startDrag(event)">
+        <img src="6.jpeg" class="moment fast3" style="top:80%; left:80%;" onpointerdown="startDrag(event)">
+        <img src="7.jpeg" class="moment fast1" style="top:30%; left:80%;" onpointerdown="startDrag(event)">
+        <img src="8.jpeg" class="moment fast2" style="top:10%; left:10%;" onpointerdown="startDrag(event)">
+        <img src="9.jpeg" class="moment fast3" style="top:60%; left:50%;" onpointerdown="startDrag(event)">
+        <img src="10.jpeg" class="moment fast1" style="top:80%; left:40%;" onpointerdown="startDrag(event)">
     </div>
     
-    <a href="video.html" id="next-btn">Weiter ❤️</a>
+    <a href="video.html" id="next-btn">Geschafft! ❤️</a>
 
     <script>
-        // --- Logik für das Einsammeln ---
-        let c = 0;
-        const totalImages = 10; // Ziel ist jetzt 10
+        let count = 0;
+        let activeElement = null;
+        let startPos = { x: 0, y: 0 };
+        let startTime = 0;
 
-        function collectImage(element) {
-            if (!element.classList.contains('found')) {
-                element.classList.add('found');
-                c++;
-                document.getElementById('count').innerText = c;
-                // Prüfen ob alle 10 gefunden wurden
-                if (c === totalImages) document.getElementById('next-btn').style.display = 'block';
-            }
+        function startDrag(e) {
+            activeElement = e.target;
+            activeElement.classList.add('dragging');
+            startTime = Date.now();
+            
+            const rect = activeElement.getBoundingClientRect();
+            startPos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+
+            activeElement.setPointerCapture(e.pointerId);
+            
+            activeElement.onpointermove = (ev) => {
+                if (!activeElement) return;
+                activeElement.style.left = (ev.clientX - startPos.x) + 'px';
+                activeElement.style.top = (ev.clientY - startPos.y) + 'px';
+            };
+
+            activeElement.onpointerup = (ev) => {
+                const duration = Date.now() - startTime;
+                activeElement.releasePointerCapture(ev.pointerId);
+                activeElement.classList.remove('dragging');
+                
+                if (duration < 250) collect(activeElement);
+                
+                activeElement.onpointermove = null;
+                activeElement.onpointerup = null;
+                activeElement = null;
+            };
         }
 
-        // --- Verbesserte Logik für das Verschieben (Drag & Drop) ---
-        const moments = document.querySelectorAll('.moment');
-        let activeItem = null;
-        let initialX, initialY;
-        let currentX = 0, currentY = 0;
-        let xOffset = 0, yOffset = 0;
-        let isDragging = false;
-        let startTime;
-
-        moments.forEach(item => {
-            // Touch Events (Handy)
-            item.addEventListener('touchstart', dragStart, {passive: false});
-            item.addEventListener('touchend', dragEnd, {passive: false});
-            item.addEventListener('touchmove', drag, {passive: false});
-
-            // Maus Events (PC)
-            item.addEventListener('mousedown', dragStart, false);
-            item.addEventListener('mouseup', dragEnd, false);
-            item.addEventListener('mousemove', drag, false);
-        });
-
-        function dragStart(e) {
-            startTime = new Date().getTime();
-            
-            if (e.type === "touchstart") {
-                initialX = e.touches[0].clientX - xOffset;
-                initialY = e.touches[0].clientY - yOffset;
-            } else {
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
+        function collect(el) {
+            if (!el.classList.contains('found')) {
+                el.classList.add('found');
+                count++;
+                document.getElementById('count').innerText = count;
+                if (count === 10) document.getElementById('next-btn').style.display = 'block';
             }
-
-            if (e.target.classList.contains('moment')) {
-                activeItem = e.target;
-                activeItem.classList.add('dragging');
-
-                // Aktuelle Position auslesen, damit es nicht springt
-                const style = window.getComputedStyle(activeItem);
-                const matrix = new WebKitCSSMatrix(style.transform);
-                xOffset = matrix.m41;
-                yOffset = matrix.m42;
-            }
-        }
-
-        function drag(e) {
-            if (activeItem) {
-                e.preventDefault(); // Verhindert Scrollen
-                isDragging = true;
-            
-                if (e.type === "touchmove") {
-                    currentX = e.touches[0].clientX - initialX;
-                    currentY = e.touches[0].clientY - initialY;
-                } else {
-                    currentX = e.clientX - initialX;
-                    currentY = e.clientY - initialY;
-                }
-
-                setTranslate(currentX, currentY, activeItem);
-            }
-        }
-
-        function dragEnd(e) {
-            if (!activeItem) return;
-
-            initialX = currentX;
-            initialY = currentY;
-            xOffset = currentX;
-            yOffset = currentY;
-            
-            // Prüfen: War es ein kurzer Klick (unter 200ms) oder wurde gezogen?
-            let endTime = new Date().getTime();
-            let timeTaken = endTime - startTime;
-            
-            // Wenn nicht gezogen wurde ODER der Klick sehr kurz war -> Einsammeln
-            if (!isDragging || timeTaken < 200) {
-                 collectImage(activeItem);
-            }
-
-            activeItem.classList.remove('dragging');
-            activeItem = null;
-            isDragging = false;
-        }
-
-        function setTranslate(xPos, yPos, el) {
-            el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
         }
     </script>
 </body>
