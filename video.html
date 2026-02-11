@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Unser Video</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: 'Dancing Script', cursive; color: white; }
+        .video-container { width: 90%; max-width: 800px; border: 2px solid #ff4d6d; border-radius: 15px; overflow: hidden; }
+        video { width: 100%; display: block; }
+        .next-link { margin-top: 30px; color: #ff4d6d; text-decoration: none; font-size: 1.5rem; border: 1px solid #ff4d6d; padding: 10px 30px; border-radius: 50px; transition: 0.3s; }
+        .next-link:hover { background: #ff4d6d; color: white; }
+    </style>
+</head>
+<body>
+    <h1 style="color: #ff4d6d;">Ein kleiner Moment für uns...</h1>
+    <div class="video-container">
+        <video controls>
+            <source src="unser-video.mp4" type="video/mp4">
+        </video>
+    </div>
+    <a href="success.html" class="next-link">Klick hier, wenn das Video fertig ist ❤️</a>
+</body>
+</html>
