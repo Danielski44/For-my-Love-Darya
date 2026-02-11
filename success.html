@@ -5,29 +5,42 @@
     <title>Happy Valentine's Day!</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { background: linear-gradient(to bottom, #ffafbd, #ffc3a0); min-height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Dancing Script', cursive; text-align: center; }
-        .final-card { background: rgba(255, 255, 255, 0.9); padding: 50px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-width: 500px; z-index: 10; border: 3px solid #ff4d6d; }
+        body { background: linear-gradient(to bottom, #ffafbd, #ffc3a0); min-height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Dancing Script', cursive; text-align: center; cursor: pointer; }
+        .final-card { background: rgba(255, 255, 255, 0.9); padding: 50px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-width: 500px; z-index: 10; border: 3px solid #ff4d6d; position: relative; }
         h1 { color: #ff4d6d; font-size: 3.5rem; margin-bottom: 20px; }
-        #message { font-size: 1.8rem; color: #333; line-height: 1.4; }
+        #message { font-size: 1.8rem; color: #333; line-height: 1.4; min-height: 100px; }
         .heart-particle { position: absolute; top: -50px; font-size: 25px; animation: fall linear infinite; pointer-events: none; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        .music-hint { font-size: 0.9rem; color: #ff4d6d; margin-top: 20px; font-family: sans-serif; }
     </style>
 </head>
-<body onclick="document.getElementById('song').play()">
+<body onclick="startEverything()">
 
     <audio id="song" loop>
-        <source src="unser-lied.mp3" type="audio/mpeg">
+        <source src="unser-lied.m4a" type="audio/mp4">
     </audio>
 
     <div class="final-card">
         <h1>Happy Valentine's Day!</h1>
         <div id="message"></div>
-        <p style="margin-top: 30px; font-size: 1rem; color: #ff4d6d;">(Tippe irgendwohin für Musik 🎵)</p>
+        <p class="music-hint" id="hint">Klicke irgendwohin für die Musik 🎵</p>
     </div>
 
     <script>
+        let started = false;
         const text = "Du bist das Beste, was mir je passiert ist. Ich liebe dich über alles! ❤️";
         let i = 0;
+
+        function startEverything() {
+            if(!started) {
+                document.getElementById('song').play();
+                document.getElementById('hint').style.display = 'none';
+                typeWriter();
+                setInterval(createHeart, 200);
+                started = true;
+            }
+        }
+
         function typeWriter() {
             if (i < text.length) {
                 document.getElementById("message").innerHTML += text.charAt(i);
@@ -43,15 +56,9 @@
             h.innerHTML = types[Math.floor(Math.random() * types.length)];
             h.style.left = Math.random() * 100 + 'vw';
             h.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            h.style.opacity = Math.random();
             document.body.appendChild(h);
             setTimeout(() => h.remove(), 5000);
         }
-
-        window.onload = () => {
-            typeWriter();
-            setInterval(createHeart, 200);
-        };
     </script>
 </body>
 </html>
