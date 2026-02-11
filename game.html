@@ -6,63 +6,61 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: 'Dancing Script', cursive; text-align: center; }
-        h2 { color: #ff4d6d; margin-top: 20px; font-size: 2rem; }
-        .game-container { position: relative; width: 100vw; height: 80vh; }
+        h2 { color: #ff4d6d; margin-top: 20px; font-size: 2.2rem; position: relative; z-index: 10; text-shadow: 1px 1px 2px white; }
+        .counter { font-size: 1.3rem; color: #ff758f; }
+        .game-container { position: relative; width: 100vw; height: 85vh; }
         
         .floating-img {
             position: absolute;
-            width: 150px; height: 150px;
+            width: 140px; height: 140px;
             object-fit: cover;
-            border-radius: 15px;
+            border-radius: 20px;
             border: 5px solid white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             cursor: pointer;
-            transition: transform 0.3s, opacity 0.3s;
-            animation: float 10s infinite linear;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: floatAround 15s infinite ease-in-out;
         }
 
-        .floating-img.clicked {
-            opacity: 0.3;
-            transform: scale(0.8);
-            pointer-events: none;
-        }
+        .floating-img.clicked { opacity: 0; transform: scale(0) rotate(360deg); pointer-events: none; }
 
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(100px, 50px) rotate(5deg); }
-            50% { transform: translate(50px, 150px) rotate(-5deg); }
-            75% { transform: translate(-100px, 50px) rotate(3deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
+        @keyframes floatAround {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(50px, -40px) rotate(5deg); }
+            50% { transform: translate(-30px, 60px) rotate(-5deg); }
+            75% { transform: translate(40px, 30px) rotate(3deg); }
         }
 
         #next-btn {
             display: none;
             position: fixed;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ff4d6d;
-            color: white;
-            padding: 20px 50px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1.5rem;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff4d6d; color: white;
+            padding: 25px 60px; border-radius: 60px;
+            text-decoration: none; font-size: 2.2rem;
+            box-shadow: 0 15px 40px rgba(255, 77, 109, 0.5);
+            z-index: 100; animation: pulse 1.5s infinite;
         }
+        @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.05); } }
     </style>
 </head>
 <body>
-    <h2>Klicke auf alle 6 Momente, um dein Geschenk zu öffnen!</h2>
-    <div class="game-container" id="container">
+    <h2>Finde alle 9 Erinnerungen!<br><span class="counter" id="count-display">Gefunden: 0/9</span></h2>
+    
+    <div class="game-container">
         <img src="1.jpg.jpeg" class="floating-img" style="top:10%; left:10%; animation-delay: 0s;" onclick="checkClick(this)">
-        <img src="2.jpg.jpeg" class="floating-img" style="top:20%; left:60%; animation-delay: 2s;" onclick="checkClick(this)">
-        <img src="3.jpg.jpeg" class="floating-img" style="top:50%; left:20%; animation-delay: 4s;" onclick="checkClick(this)">
-        <img src="4.jpg.jpeg" class="floating-img" style="top:60%; left:70%; animation-delay: 1s;" onclick="checkClick(this)">
+        <img src="2.jpg.jpeg" class="floating-img" style="top:20%; left:75%; animation-delay: 2s;" onclick="checkClick(this)">
+        <img src="3.jpg.jpeg" class="floating-img" style="top:55%; left:15%; animation-delay: 4s;" onclick="checkClick(this)">
+        <img src="4.jpg.jpeg" class="floating-img" style="top:70%; left:65%; animation-delay: 1s;" onclick="checkClick(this)">
         <img src="5.jpg.jpeg" class="floating-img" style="top:40%; left:40%; animation-delay: 5s;" onclick="checkClick(this)">
-        <img src="6.jpg.jpeg" class="floating-img" style="top:15%; left:35%; animation-delay: 3s;" onclick="checkClick(this)">
+        <img src="6.jpg.jpeg" class="floating-img" style="top:15%; left:45%; animation-delay: 3s;" onclick="checkClick(this)">
+        <img src="7.jpg.jpeg" class="floating-img" style="top:65%; left:80%; animation-delay: 1.5s;" onclick="checkClick(this)">
+        <img src="8.jpg.jpeg" class="floating-img" style="top:75%; left:35%; animation-delay: 2.5s;" onclick="checkClick(this)">
+        <img src="9.jpg.jpeg" class="floating-img" style="top:5%; left:80%; animation-delay: 3.5s;" onclick="checkClick(this)">
     </div>
 
-    <a href="success.html" id="next-btn">Geschafft! Weiter ❤️</a>
+    <a href="success.html" id="next-btn">Überraschung öffnen! ❤️</a>
 
     <script>
         let clickedCount = 0;
@@ -70,13 +68,14 @@
             if (!img.classList.contains('clicked')) {
                 img.classList.add('clicked');
                 clickedCount++;
-                if (clickedCount === 6) {
-                    document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('count-display').innerText = `Gefunden: ${clickedCount}/9`;
+                if (clickedCount === 9) {
+                    setTimeout(() => {
+                        document.getElementById('next-btn').style.display = 'block';
+                    }, 500);
                 }
             }
         }
     </script>
-</body>
-</html>
 </body>
 </html>
