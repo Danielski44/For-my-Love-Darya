@@ -5,36 +5,92 @@
     <title>Happy Valentine's Day!</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { background: linear-gradient(to bottom, #ffafbd, #ffc3a0); height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Dancing Script', cursive; }
-        .card { background: rgba(255, 255, 255, 0.9); padding: 50px; border-radius: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 10; }
-        h1 { color: #ff4d6d; font-size: 4rem; margin: 0; }
-        p { font-size: 1.5rem; color: #333; }
-        
-        .falling { position: absolute; top: -50px; font-size: 30px; animation: fall linear infinite; }
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
+        body { 
+            background: linear-gradient(to bottom, #ffafbd, #ffc3a0); 
+            min-height: 100vh; margin: 0; 
+            display: flex; justify-content: center; align-items: center; 
+            overflow-x: hidden; font-family: 'Dancing Script', cursive; 
+            padding: 40px 0;
         }
+        .card { 
+            background: rgba(255, 255, 255, 0.95); 
+            padding: 35px; border-radius: 25px; 
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+            z-index: 10; max-width: 650px; width: 90%;
+            border: 2px solid white;
+        }
+        h1 { color: #ff4d6d; font-size: 3.2rem; margin-top: 0; }
+        
+        .video-wrapper {
+            width: 100%; border-radius: 15px;
+            overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 25px; background: #000;
+        }
+        video { width: 100%; display: block; }
+
+        #typewriter { font-size: 1.5rem; color: #444; min-height: 80px; line-height: 1.5; padding: 0 10px; }
+        
+        .falling { position: absolute; top: -50px; font-size: 30px; animation: fall linear infinite; pointer-events: none; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        #music-btn { position: fixed; bottom: 25px; right: 25px; background: white; border: none; border-radius: 50%; padding: 18px; cursor: pointer; z-index: 100; font-size: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
     </style>
 </head>
-<body>
+<body onclick="playMusic()">
+
+    <audio id="loveSong" loop>
+        <source src="unser-lied.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="music-btn" onclick="toggleMusic()">🎵</button>
+
     <div class="card">
         <h1>Happy Valentine's Day!</h1>
-        <p>Du bist das Beste, was mir je passiert ist. ❤️</p>
-        <p>Danke für jeden Moment mit dir!</p>
+
+        <div class="video-wrapper">
+            <video controls poster="9.jpg.jpeg">
+                <source src="unser-video.mp4" type="video/mp4">
+                Dein Browser unterstützt keine Videos.
+            </video>
+        </div>
+
+        <div id="typewriter"></div>
     </div>
 
     <script>
+        // Musik-Logik
+        const song = document.getElementById('loveSong');
+        function playMusic() { song.play().catch(() => {}); }
+        function toggleMusic() { song.paused ? song.play() : song.pause(); }
+
+        // Dein persönlicher Text - HIER ANPASSEN
+        const text = "Du bist das Beste, was mir je passiert ist. Jedes dieser Bilder und dieses Video stehen für ein Kapitel unserer Geschichte, das ich niemals missen möchte. Ich liebe dich über alles! ❤️";
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                document.getElementById("typewriter").innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 55);
+            }
+        }
+
+        // Starte alles
+        window.onload = () => {
+            typeWriter();
+            setInterval(createEmoji, 250);
+        };
+
         function createEmoji() {
-            const emojis = ['❤️', '🌸', '🌹', '✨', '💖', '🌷'];
+            const emojis = ['❤️', '🌸', '🌹', '✨', '💖', '🌷', '💝'];
             const e = document.createElement('div');
             e.classList.add('falling');
             e.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
             e.style.left = Math.random() * 100 + "vw";
-            e.style.animationDuration = Math.random() * 3 + 2 + "s";
+            e.style.animationDuration = Math.random() * 3 + 2.5 + "s";
+            e.style.opacity = Math.random();
             document.body.appendChild(e);
-            setTimeout(() => e.remove(), 5000);
+            setTimeout(() => e.remove(), 6000);
         }
-        setInterval(createEmoji, 200);
     </script>
 </body>
 </html>
