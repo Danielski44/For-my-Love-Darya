@@ -6,23 +6,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         body { background: linear-gradient(to bottom, #ffafbd, #ffc3a0); height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Dancing Script', cursive; text-align: center; cursor: pointer; }
-        .card { background: rgba(255, 255, 255, 0.9); padding: 50px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); max-width: 600px; border: 3px solid #ff4d6d; }
-        h1 { color: #ff4d6d; font-size: 2.5rem; }
+        .card { background: rgba(255, 255, 255, 0.9); padding: 50px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); max-width: 600px; border: 3px solid #ff4d6d; }
+        h1 { color: #ff4d6d; font-size: 2.5rem; line-height: 1.4; }
         .heart { position: absolute; top: -50px; font-size: 30px; animation: fall linear infinite; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
 <body onclick="document.getElementById('song').play();">
-    
-    <audio id="song" loop>
-        <source src="unser-lied.m4a" type="audio/mp4">
-    </audio>
-
+    <audio id="song" loop><source src="unser-lied.m4a" type="audio/mp4"></audio>
     <div class="card">
         <h1>Ich liebe dich mein Bubi! <br>Happy Valentines Day! <br>Du bist das Beste, was mir je passiert ist! ❤️</h1>
-        <p style="font-family: sans-serif; font-size: 1rem; color: #ff4d6d; margin-top: 20px;">(Tippe einmal auf den Text für die Musik 🎵)</p>
+        <p style="font-family: sans-serif; font-size: 1rem; color: #ff4d6d; margin-top: 20px;">(Tippe für Musik 🎵)</p>
     </div>
-
     <script>
         function createHeart() {
             const h = document.createElement('div'); h.className = 'heart'; h.innerHTML = '❤️';
