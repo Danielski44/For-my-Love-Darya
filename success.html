@@ -12,12 +12,17 @@
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
     </style>
 </head>
-<body onclick="document.getElementById('song').play()">
-    <audio id="song" loop><source src="unser-lied.mp3" type="audio/mpeg"></audio>
+<body onclick="document.getElementById('song').play();">
+    
+    <audio id="song" loop>
+        <source src="unser-lied.m4a" type="audio/mp4">
+    </audio>
+
     <div class="card">
         <h1>Ich liebe dich mein Bubi! <br>Happy Valentines Day! <br>Du bist das Beste, was mir je passiert ist! ❤️</h1>
-        <p style="font-family: sans-serif; font-size: 0.8rem; color: #ff4d6d; margin-top: 20px;">(Klicke für Musik 🎵)</p>
+        <p style="font-family: sans-serif; font-size: 1rem; color: #ff4d6d; margin-top: 20px;">(Tippe einmal auf den Text für die Musik 🎵)</p>
     </div>
+
     <script>
         function createHeart() {
             const h = document.createElement('div'); h.className = 'heart'; h.innerHTML = '❤️';
@@ -26,7 +31,5 @@
         }
         setInterval(createHeart, 300);
     </script>
-</body>
-</html>
 </body>
 </html>
