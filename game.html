@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Sammle Momente</title>
+    <title>Sammle unsere Momente</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: 'Dancing Script', cursive; text-align: center; }
@@ -10,31 +10,31 @@
         .moment {
             position: absolute; width: 120px; height: 120px; object-fit: cover;
             border-radius: 20px; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            cursor: pointer; transition: 0.4s; animation: float 10s infinite ease-in-out;
+            cursor: pointer; transition: 0.4s; animation: floatAround 12s infinite ease-in-out;
         }
         .found { opacity: 0; transform: scale(0); pointer-events: none; }
-        @keyframes float { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(25px, 35px); } }
+        @keyframes floatAround { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(30px, 40px); } }
         #next-btn {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #ff4d6d; color: white; padding: 20px 50px; border-radius: 60px;
+            background: #ff4d6d; color: white; padding: 25px 50px; border-radius: 60px;
             text-decoration: none; font-size: 1.8rem; z-index: 100; box-shadow: 0 10px 30px rgba(255, 77, 109, 0.4);
         }
     </style>
 </head>
 <body>
-    <h2>Finde alle 9 Bilder! (<span id="count">0</span>/9)</h2>
+    <h2>Klicke auf alle 9 Bilder unserer Zeit! (<span id="count">0</span>/9)</h2>
     <div id="game">
-        <img src="1.jpg.jpeg" class="moment" style="top:15%; left:10%;" onclick="hit(this)">
-        <img src="2.jpg.jpeg" class="moment" style="top:25%; left:70%;" onclick="hit(this)">
-        <img src="3.jpg.jpeg" class="moment" style="top:55%; left:15%;" onclick="hit(this)">
-        <img src="4.jpg.jpeg" class="moment" style="top:75%; left:65%;" onclick="hit(this)">
-        <img src="5.jpg.jpeg" class="moment" style="top:40%; left:40%;" onclick="hit(this)">
-        <img src="6.jpg.jpeg" class="moment" style="top:15%; left:45%;" onclick="hit(this)">
-        <img src="7.jpg.jpeg" class="moment" style="top:60%; left:85%;" onclick="hit(this)">
-        <img src="8.jpg.jpeg" class="moment" style="top:80%; left:25%;" onclick="hit(this)">
-        <img src="9.jpg.jpeg" class="moment" style="top:5%; left:80%;" onclick="hit(this)">
+        <img src="1.jpeg" class="moment" style="top:15%; left:10%;" onclick="hit(this)">
+        <img src="2.jpeg" class="moment" style="top:25%; left:70%;" onclick="hit(this)">
+        <img src="3.jpeg" class="moment" style="top:55%; left:15%;" onclick="hit(this)">
+        <img src="4.jpeg" class="moment" style="top:75%; left:65%;" onclick="hit(this)">
+        <img src="5.jpeg" class="moment" style="top:40%; left:40%;" onclick="hit(this)">
+        <img src="6.jpeg" class="moment" style="top:15%; left:45%;" onclick="hit(this)">
+        <img src="7.jpeg" class="moment" style="top:60%; left:85%;" onclick="hit(this)">
+        <img src="8.jpeg" class="moment" style="top:80%; left:25%;" onclick="hit(this)">
+        <img src="9.jpeg" class="moment" style="top:5%; left:80%;" onclick="hit(this)">
     </div>
-    <a href="success.html" id="next-btn">Weiter ❤️</a>
+    <a href="video.html" id="next-btn">Weiter ❤️</a>
     <script>
         let c = 0;
         function hit(e) {
