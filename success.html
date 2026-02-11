@@ -1,46 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>You Did It ❤️</title>
-<style>
-body {
-    margin:0;
-    overflow:hidden;
-    text-align:center;
-    font-family:Arial;
-    background:#ffdde1;
-}
-h1 {
-    margin-top:200px;
-}
-.heart {
-    position:absolute;
-    color:red;
-    animation: fall 5s linear infinite;
-}
-@keyframes fall {
-    0% { top:-10%; }
-    100% { top:100%; }
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Happy Valentine's Day!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(to bottom, #ffafbd, #ffc3a0); height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; font-family: 'Dancing Script', cursive; }
+        .card { background: rgba(255, 255, 255, 0.9); padding: 50px; border-radius: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 10; }
+        h1 { color: #ff4d6d; font-size: 4rem; margin: 0; }
+        p { font-size: 1.5rem; color: #333; }
+        
+        .falling { position: absolute; top: -50px; font-size: 30px; animation: fall linear infinite; }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
+    <div class="card">
+        <h1>Happy Valentine's Day!</h1>
+        <p>Du bist das Beste, was mir je passiert ist. ❤️</p>
+        <p>Danke für jeden Moment mit dir!</p>
+    </div>
 
-<h1>Happy Valentine's Day ❤️</h1>
-<h2>I love you so much 💕</h2>
-
-<script>
-for(let i=0;i<50;i++){
-    let heart=document.createElement("div");
-    heart.innerHTML="❤️";
-    heart.className="heart";
-    heart.style.left=Math.random()*100+"%";
-    heart.style.fontSize=(20+Math.random()*30)+"px";
-    heart.style.animationDuration=(3+Math.random()*5)+"s";
-    document.body.appendChild(heart);
-}
-</script>
-
+    <script>
+        function createEmoji() {
+            const emojis = ['❤️', '🌸', '🌹', '✨', '💖', '🌷'];
+            const e = document.createElement('div');
+            e.classList.add('falling');
+            e.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+            e.style.left = Math.random() * 100 + "vw";
+            e.style.animationDuration = Math.random() * 3 + 2 + "s";
+            document.body.appendChild(e);
+            setTimeout(() => e.remove(), 5000);
+        }
+        setInterval(createEmoji, 200);
+    </script>
 </body>
 </html>
