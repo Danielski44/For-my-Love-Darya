@@ -3,72 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Für Dich ❤️</title>
+    <title>Speziallieferung! 🚚</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #ffeff3; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; overflow: hidden; }
-        
-        /* Der Umschlag */
-        .envelope-container { cursor: pointer; transition: transform 0.3s; }
-        .envelope-container:hover { transform: scale(1.05); }
-        .envelope {
-            width: 300px; height: 200px; background: #ff4d6d; 
-            position: relative; border-radius: 10px;
+        body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; }
+
+        /* --- TEIL 1: INTRO ANIMATION --- */
+        #intro-scene {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff5f6; z-index: 100;
             display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        /* Das Herz in der Mitte */
-        .heart-seal { font-size: 80px; animation: pulse 2s infinite; }
-        
-        /* Der Brief (erst unsichtbar) */
-        .letter-card {
-            display: none; /* Erst versteckt */
-            background: white; width: 320px; padding: 40px; 
-            border-radius: 20px; text-align: center; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            border: 4px solid #ff4d6d;
-            animation: popIn 0.5s ease-out;
-            position: absolute; z-index: 10;
+            flex-direction: column;
+            transition: opacity 1s ease-out;
         }
 
-        h1 { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 2rem; margin-bottom: 30px; line-height: 1.4; }
-        
-        .btn-group { display: flex; justify-content: center; gap: 20px; }
-        .btn { padding: 12px 30px; border-radius: 50px; border: none; font-size: 1.1rem; cursor: pointer; transition: 0.3s; font-weight: bold; text-decoration: none; }
-        .btn-yes { background: #ff4d6d; color: white; }
-        .btn-yes:hover { transform: scale(1.1); background: #ff2a55; }
-        .btn-no { background: #e0e0e0; color: #555; }
+        .road {
+            position: absolute; bottom: 30%; width: 100%; height: 4px; background: #ddd;
+        }
 
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .truck-container {
+            position: absolute; bottom: 30%; left: -200px; /* Startet außerhalb */
+            font-size: 100px;
+            transition: left 2.5s cubic-bezier(0.25, 1, 0.5, 1); /* Fährt sanft ein */
+        }
+
+        .postman {
+            position: absolute; bottom: 30%; left: 50%; transform: translateX(-50%) scale(0);
+            font-size: 90px;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* "Pop" Effekt */
+        }
+
+        .speech-bubble {
+            position: absolute; bottom: 45%; left: 50%; transform: translateX(-50%);
+            background: white; padding: 15px 25px; border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-weight: bold; color: #555; opacity: 0; transition: opacity 0.5s;
+            white-space: nowrap;
+        }
+        .speech-bubble::after {
+            content: ""; position: absolute; bottom: -10px; left: 50%; margin-left: -10px;
+            border-width: 10px; border-style: solid; border-color: white transparent transparent transparent;
+        }
+
+        /* --- TEIL 2: DER BRIEF --- */
+        #main-content {
+            opacity: 0; transition: opacity 1s; display: none;
+        }
+
+        .envelope-wrapper { position: relative; cursor: pointer; transition: 0.3s; }
+        .envelope-wrapper:hover { transform: scale(1.02); }
+        
+        .envelope { width: 320px; height: 220px; background: #ff4d6d; position: relative; border-radius: 0 0 10px 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; z-index: 2; }
+        .envelope::before { content: ""; position: absolute; top: 0; left: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 110px solid #ff758f; transform-origin: top; transition: 0.6s; z-index: 3; }
+        
+        .heart-seal { font-size: 60px; z-index: 4; animation: pulse 1.5s infinite; }
+
+        .letter {
+            position: absolute; bottom: 0; left: 10px; background: white; width: 300px; height: 180px;
+            transition: 0.8s; z-index: 1; padding: 25px; box-sizing: border-box; text-align: center; border-radius: 5px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .letter h2 { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.4rem; margin: 0 0 15px 0; }
+        
+        .buttons { display: flex; gap: 15px; }
+        .btn { padding: 8px 20px; border-radius: 20px; border: none; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
+        .yes { background: #ff4d6d; color: white; }
+        .yes:hover { transform: scale(1.1); }
+        .no { background: #eee; color: #555; }
+
+        /* Animation Klassen */
+        .open-envelope .envelope::before { transform: rotateX(180deg); }
+        .open-envelope .letter { transform: translateY(-120px); z-index: 2; }
+        .open-envelope .heart-seal { display: none; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <div class="envelope-container" id="envelope" onclick="openLetter()">
-        <div class="envelope">
-            <div class="heart-seal">💌</div>
-        </div>
-        <p style="text-align: center; color: #ff4d6d; margin-top: 15px; font-weight: bold;">(Klick mich an)</p>
+    <div id="intro-scene">
+        <div class="road"></div>
+        <div class="truck-container" id="truck">🚚</div>
+        <div class="postman" id="postman">👮‍♂️💌</div>
+        <div class="speech-bubble" id="bubble">Ich habe Post für dich!</div>
     </div>
 
-    <div class="letter-card" id="letter">
-        <h1>Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</h1>
-        <div class="btn-group">
-            <a href="game.html" class="btn btn-yes">JA ❤️</a>
-            <button class="btn btn-no" onclick="closeLetter()">Nein</button>
+    <div id="main-content">
+        <div class="envelope-wrapper" id="wrapper" onclick="openBrief()">
+            <div class="envelope">
+                <div class="heart-seal">❤️</div>
+            </div>
+            <div class="letter">
+                <h2>Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</h2>
+                <div class="buttons">
+                    <a href="game.html" class="btn yes">JA! ❤️</a>
+                    <button class="btn no" onclick="closeBrief(event)">Nein</button>
+                </div>
+            </div>
+            <p style="text-align: center; color: #ff4d6d; margin-top: 20px; font-weight: bold; font-family: sans-serif;">(Öffne mich)</p>
         </div>
     </div>
 
     <script>
-        function openLetter() {
-            document.getElementById('envelope').style.display = 'none'; // Umschlag weg
-            document.getElementById('letter').style.display = 'block'; // Brief da
+        // --- DAS SCRIPT FÜR DAS INTRO ---
+        window.onload = function() {
+            const truck = document.getElementById('truck');
+            const postman = document.getElementById('postman');
+            const bubble = document.getElementById('bubble');
+            const intro = document.getElementById('intro-scene');
+            const main = document.getElementById('main-content');
+
+            // 1. Truck fährt ein (nach 0.5s)
+            setTimeout(() => {
+                truck.style.left = "50%";
+                truck.style.transform = "translateX(-150%)"; // Stoppt etwas links der Mitte
+            }, 500);
+
+            // 2. Postbote steigt aus (nach 2.5s)
+            setTimeout(() => {
+                postman.style.opacity = "1";
+                postman.style.transform = "translateX(50%) scale(1)"; // Erscheint rechts vom Truck
+            }, 2500);
+
+            // 3. Sprechblase erscheint (nach 3.2s)
+            setTimeout(() => {
+                bubble.style.opacity = "1";
+            }, 3200);
+
+            // 4. Alles blendet aus, Brief erscheint (nach 5.5s)
+            setTimeout(() => {
+                intro.style.opacity = "0";
+                setTimeout(() => {
+                    intro.style.display = "none";
+                    main.style.display = "block";
+                    setTimeout(() => { main.style.opacity = "1"; }, 100);
+                }, 1000);
+            }, 5500);
+        };
+
+        // --- DAS SCRIPT FÜR DEN BRIEF ---
+        function openBrief() {
+            document.getElementById('wrapper').classList.add('open-envelope');
         }
 
-        function closeLetter() {
-            document.getElementById('letter').style.display = 'none'; // Brief weg
-            document.getElementById('envelope').style.display = 'block'; // Umschlag wieder da
+        function closeBrief(e) {
+            e.stopPropagation(); // Verhindert sofortiges Wiederöffnen
+            document.getElementById('wrapper').classList.remove('open-envelope');
         }
     </script>
 </body>
