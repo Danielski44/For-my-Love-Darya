@@ -27,13 +27,12 @@
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
         .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
 
-        /* LKW */
+        /* LKW & Postbote */
         .truck { 
             font-size: 180px; position: absolute; bottom: 18%; left: -400px; z-index: 2; 
             transition-timing-function: linear; 
         }
         
-        /* Postbote */
         .postman-wrapper { position: absolute; bottom: 15%; left: 40%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
         .pm-part { position: absolute; font-size: 90px; text-align: center; width: 100%; }
         .pm-head-container { top: 0; height: 60px; z-index: 10; transition: transform 0.5s; }
@@ -47,74 +46,74 @@
         .bubble { position: absolute; top: -100px; left: -90px; width: 300px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-weight: bold; opacity: 0; transition: opacity 0.5s; text-align: center; z-index: 20; }
         .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* --- BRIEF OVERLAY --- */
+        /* --- DER BRIEF (KORRIGIERT) --- */
         #letter-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
         }
 
-        .envelope-container {
-            position: relative; width: 320px; height: 220px; cursor: pointer;
-            transition: transform 0.3s; margin-top: 80px;
+        .envelope-wrapper {
+            position: relative; width: 300px; height: 200px; cursor: pointer;
+            margin-top: 50px;
         }
-        .envelope-container:hover { transform: scale(1.05); }
+        .envelope-wrapper:hover { transform: scale(1.02); transition: 0.3s; }
 
-        /* Umschlag Tasche (Vorne) */
-        .envelope-front {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            z-index: 20; border-radius: 0 0 10px 10px; pointer-events: none;
-            /* Dreiecks-Optik */
-            border-bottom: 110px solid #f7f7f7;
-            border-left: 160px solid #ececec;
-            border-right: 160px solid #ececec;
-            border-top: 110px solid transparent;
-            box-sizing: border-box;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        /* Die Lasche oben */
-        .envelope-flap {
-            position: absolute; top: 0; left: 0; width: 0; height: 0;
-            border-left: 160px solid transparent;
-            border-right: 160px solid transparent;
-            border-top: 120px solid #e0e0e0;
-            transform-origin: top; transition: transform 0.6s ease-in-out, z-index 0.6s;
-            z-index: 21;
-        }
-
-        /* Hintergrund des Umschlags (innen) */
+        /* Innenseite (Hintergrund) */
         .envelope-back {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; border-radius: 5px; z-index: 1;
+            background-color: #f7f7f7; border-radius: 5px; z-index: 1;
         }
 
-        /* Die Karte (Inhalt) */
+        /* Die Karte/Blatt (Inhalt) */
         .letter-card {
-            position: absolute; bottom: 0; left: 10px; width: 300px; height: 200px;
-            background: #fff; border: 2px solid #ff4d6d; border-radius: 5px;
+            position: absolute; bottom: 0; left: 10px; width: 280px; height: 180px;
+            background: #fff; border: 1px solid #ddd;
             display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            padding: 15px; box-sizing: border-box;
-            transition: transform 1s 0.4s ease-in-out;
-            z-index: 5; /* Im Umschlag */
-            box-shadow: 0 -5px 10px rgba(0,0,0,0.1);
+            padding: 10px; box-sizing: border-box;
+            transition: transform 0.6s 0.4s ease-in-out; /* Animation rausfahren */
+            z-index: 5; /* Startet im Umschlag */
         }
 
         .letter-text { 
-            font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.5rem; 
-            margin-bottom: 15px; opacity: 0; transition: opacity 0.5s 1s; 
+            font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.4rem; 
+            margin-bottom: 15px; opacity: 0; transition: opacity 0.3s 0.8s; 
         }
 
-        .btn-group { display: flex; gap: 15px; justify-content: center; opacity: 0; transition: opacity 0.5s 1s; }
-        .btn { padding: 8px 30px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; pointer-events: auto; }
-        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 5px 10px rgba(255,77,109,0.3); }
-        .yes:hover { transform: scale(1.1); background: #ff2a55; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; opacity: 0; transition: opacity 0.3s 0.8s; }
+        .btn { padding: 8px 25px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; pointer-events: auto; }
+        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; }
+        .yes:hover { transform: scale(1.1); }
         .no { background: #eee; color: #555; }
+
+        /* Umschlag Tasche (Vorne) - Weiß */
+        .envelope-front {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; border-radius: 0 0 10px 10px; pointer-events: none;
+            /* Dreiecke mit CSS */
+            border-bottom: 100px solid #ffffff;
+            border-left: 150px solid #f2f2f2;
+            border-right: 150px solid #f2f2f2;
+            border-top: 100px solid transparent;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Die Lasche oben - Weiß */
+        .envelope-flap {
+            position: absolute; top: 0; left: 0; width: 0; height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #e6e6e6; /* Leicht dunkler für Kontrast */
+            transform-origin: top; transition: transform 0.4s ease-in-out, z-index 0.4s;
+            z-index: 20; /* Startet oben */
+        }
+
+        /* KEIN HERZ MEHR HIER */
 
         /* Animation Klassen */
         .open .envelope-flap { transform: rotateX(180deg); z-index: 0; }
         
-        /* Karte fährt hoch und kriegt HÖCHSTEN Z-Index */
-        .open .letter-card { transform: translateY(-150px); z-index: 100; } 
+        /* Karte fährt ein Stück raus und kommt vor die Tasche */
+        .open .letter-card { transform: translateY(-120px); z-index: 30; box-shadow: 0 5px 15px rgba(0,0,0,0.1); } 
         .open .letter-text, .open .btn-group { opacity: 1; }
 
         @keyframes legWalk { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
@@ -151,15 +150,20 @@
     <div id="letter-overlay">
         <div class="envelope-wrapper" id="myEnvelope" onclick="openEnvelopeAnim()">
             <div class="envelope-back"></div>
+            
             <div class="letter-card">
-                <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
-                <div class="btn-group">
-                    <a href="game.html" class="btn yes">JA ❤️</a>
-                    <button class="btn no" onclick="event.stopPropagation(); closeEnvelopeAnim()">Nein</button>
+                <div class="letter-content">
+                    <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
+                    <div class="btn-group">
+                        <a href="game.html" class="btn yes">JA ❤️</a>
+                        <button class="btn no" onclick="event.stopPropagation(); closeEnvelopeAnim()">Nein</button>
+                    </div>
                 </div>
             </div>
+            
             <div class="envelope-front"></div>
             <div class="envelope-flap"></div>
+            
             <p id="hint" style="position: absolute; bottom: -40px; width: 100%; text-align: center; color: white; font-weight: bold;">(Klicke auf den Brief)</p>
         </div>
     </div>
