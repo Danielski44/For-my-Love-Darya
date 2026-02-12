@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speziallieferung! 🚚</title>
+    <title>Speziallieferung ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; overflow: hidden; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #87CEEB; }
@@ -23,126 +23,106 @@
         /* Landschaft */
         #scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; overflow: hidden; }
         .sun { position: absolute; top: 30px; right: 30px; width: 80px; height: 80px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 40px #FFD700; }
-        .cloud { position: absolute; background: rgba(255,255,255,0.8); border-radius: 50px; animation: cloudMove 60s linear infinite; }
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
         
-        /* --- STRASSE MIT WEISSEN STREIFEN (Repariert) --- */
+        /* STRASSE MIT WEISSEN STREIFEN */
         .road { 
             position: absolute; bottom: 15%; width: 100%; height: 80px; background: #555; 
             border-top: 3px solid #fff; border-bottom: 3px solid #fff;
-            display: flex; align-items: center; justify-content: center;
+            display: flex; align-items: center; 
         }
-        .road::after {
-            content: ""; width: 100%; height: 4px;
+        .road-lines {
+            width: 100%; height: 4px;
             background: repeating-linear-gradient(to right, white 0, white 40px, transparent 40px, transparent 80px);
         }
 
-        /* LKW */
-        .truck { 
-            font-size: 180px; position: absolute; bottom: 18%; left: -400px; z-index: 2; 
-            transition-timing-function: linear; 
-        }
-        
-        /* Postbote */
+        /* LKW & Postbote */
+        .truck { font-size: 180px; position: absolute; bottom: 18%; left: -400px; z-index: 2; transition-timing-function: linear; }
         .postman-wrapper { position: absolute; bottom: 15%; left: 40%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
         .pm-part { position: absolute; font-size: 90px; text-align: center; width: 100%; }
         .pm-head-container { top: 0; height: 60px; z-index: 10; transition: transform 0.5s; }
-        .pm-head { display: block; }
         .pm-body { top: 50px; z-index: 5; color: #0056b3; }
         .pm-arm-left { top: 70px; left: -50px; z-index: 6; font-size: 70px; }
-        .pm-arm-right { top: 70px; left: 50px; z-index: 6; font-size: 70px; cursor: pointer; transition: 0.3s; pointer-events: auto; }
-        .pm-arm-right:hover { transform: scale(1.2); }
+        .pm-arm-right { top: 70px; left: 50px; z-index: 6; font-size: 70px; cursor: pointer; transition: 0.3s; }
         .pm-legs { top: 120px; z-index: 4; }
+        
         .walking .pm-legs { animation: legWalk 0.4s infinite alternate; }
         .bubble { position: absolute; top: -100px; left: -90px; width: 300px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-weight: bold; opacity: 0; transition: opacity 0.5s; text-align: center; z-index: 20; }
         .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* --- GANZ NORMALER BRIEF (Simpel & Stabil) --- */
+        /* --- DER BRIEF (STABIL & NORMAL) --- */
         #letter-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center; flex-direction: column;
+            background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
         }
 
-        /* ZUSTAND 1: Einfacher geschlossener weißer Umschlag */
-        .simple-envelope {
-            width: 300px; height: 200px; background: #ffffff;
-            border: 2px solid #e0e0e0; border-radius: 5px;
-            position: relative; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            display: flex; justify-content: center; align-items: center;
+        /* 1. Geschlossener Umschlag */
+        #envelope-closed {
+            width: 300px; height: 200px; background: white; border: 2px solid #ddd; border-radius: 5px;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: transform 0.3s;
         }
-        .simple-envelope:hover { transform: scale(1.05); }
-        /* Angedeutete Lasche */
-        .envelope-v {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        #envelope-closed:hover { transform: scale(1.05); }
+        .flap-line {
+            position: absolute; top: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom right, transparent 49%, #f0f0f0 50%, transparent 51%),
+                        linear-gradient(to bottom left, transparent 49%, #f0f0f0 50%, transparent 51%);
             pointer-events: none;
-            border-top: 100px solid #f7f7f7; /* Leicht dunkleres Weiß */
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
         }
 
-        /* ZUSTAND 2: Einfaches geöffnetes weißes Papier */
-        .simple-paper {
-            display: none; /* Erst versteckt */
-            width: 320px; background: #fff; padding: 30px;
-            border-radius: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center; animation: fadeIn 0.5s;
+        /* 2. Geöffnetes weißes Papier */
+        #letter-paper {
+            display: none; width: 320px; background: white; padding: 40px; border-radius: 2px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center;
+            border: 1px solid #eee;
         }
 
-        .letter-text { 
-            font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.8rem; 
-            margin-bottom: 25px; line-height: 1.3;
-        }
+        .letter-text { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.8rem; margin-bottom: 30px; line-height: 1.4; }
         .btn-group { display: flex; gap: 15px; justify-content: center; }
         .btn { padding: 10px 30px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; }
-        .yes:hover { transform: scale(1.1); }
+        .yes { background: #ff4d6d; color: white; text-decoration: none; }
         .no { background: #eee; color: #555; }
-        #hint { color: white; margin-top: 20px; font-weight: bold; }
 
         @keyframes legWalk { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
         @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         @keyframes cloudMove { from { left: -20%; } to { left: 120%; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
     <audio id="truckSound"><source src="lkw.mp3" type="audio/mpeg"></audio>
 
     <div id="start-screen">
-        <h1 style="color: white; font-family: sans-serif; margin-bottom: 30px;">Für meine Dosienka ❤️</h1>
+        <h1 style="color: white; font-family: sans-serif;">Für meine Dosienka ❤️</h1>
         <button class="start-btn" onclick="startShow()">Starten</button>
     </div>
 
     <div id="scene">
         <div class="sun"></div>
-        <div class="cloud" style="top: 15%; width: 100px; height: 40px;"></div>
         <div class="grass"></div>
-        <div class="road"></div>
+        <div class="road"><div class="road-lines"></div></div>
         <div class="truck" id="truck">🚚</div>
 
         <div class="postman-wrapper" id="postman">
-            <div class="bubble">Ich habe Post für dich und deine Lieblingsblumen!</div>
-            <div class="pm-part pm-head-container"><span class="pm-head">👨‍✈️</span></div>
+            <div class="bubble">Ich habe Post für dich! 💌</div>
+            <div class="pm-part pm-head-container">👨‍✈️</div>
             <div class="pm-part pm-body">👕</div>
-            <div class="pm-part pm-arm-left">💐🌷</div>
-            <div class="pm-part pm-arm-right" onclick="showEnvelope()">💌</div>
+            <div class="pm-part pm-arm-left">💐</div>
+            <div class="pm-part pm-arm-right" onclick="showLetter()">💌</div>
             <div class="pm-part pm-legs">👖</div>
         </div>
     </div>
 
     <div id="letter-overlay">
-        <div class="simple-envelope" id="closedBox" onclick="openSimpleLetter()">
-            <div class="envelope-v"></div>
+        <div id="envelope-closed" onclick="openLetter()">
+            <div class="flap-line"></div>
+            <span style="color: #ccc;">Klick zum Öffnen</span>
         </div>
-        <p id="hint">(Klicke auf den Brief)</p>
 
-        <div class="simple-paper" id="openedPaper">
+        <div id="letter-paper">
             <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
             <div class="btn-group">
                 <a href="game.html" class="btn yes">JA ❤️</a>
-                <button class="btn no" onclick="closeSimpleLetter()">Nein</button>
+                <button class="btn no" onclick="location.reload()">Nein</button>
             </div>
         </div>
     </div>
@@ -151,66 +131,56 @@
         function startShow() {
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('scene').style.display = 'block';
-            
             const audio = document.getElementById('truckSound');
-            let playPromise = audio.play();
             
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    let duration = audio.duration;
-                    if(!duration || isNaN(duration) || duration === Infinity) duration = 8;
-                    driveTruck(duration);
-                    audio.onended = function() { spawnPostman(); };
-                }).catch(e => {
-                    driveTruck(8); setTimeout(spawnPostman, 8000);
-                });
-            } else {
-                driveTruck(8); setTimeout(spawnPostman, 8000);
-            }
+            audio.play().then(() => {
+                let duration = audio.duration || 8;
+                const truck = document.getElementById('truck');
+                truck.style.transition = `left ${duration}s linear`;
+                setTimeout(() => { truck.style.left = "35%"; }, 50);
+
+                audio.onended = () => {
+                    const pm = document.getElementById('postman');
+                    pm.style.opacity = "1";
+                    pm.classList.add('walking');
+                    pm.style.transition = "left 3s linear";
+                    pm.style.left = "50%";
+                    pm.style.transform = "translateX(-50%)";
+                    setTimeout(() => {
+                        pm.classList.remove('walking');
+                        document.querySelector('.bubble').style.opacity = "1";
+                    }, 3100);
+                };
+            }).catch(() => {
+                // Fallback falls Audio blockiert wird
+                const truck = document.getElementById('truck');
+                truck.style.transition = `left 8s linear`;
+                truck.style.left = "35%";
+                setTimeout(startPostmanManual, 8500);
+            });
         }
 
-        function driveTruck(duration) {
-            const truck = document.getElementById('truck');
-            truck.style.transition = `left ${duration}s linear`;
-            setTimeout(() => { truck.style.left = "35%"; }, 50);
-        }
-
-        function spawnPostman() {
-            const postman = document.getElementById('postman');
-            postman.style.opacity = "1";
+        function startPostmanManual() {
+            const pm = document.getElementById('postman');
+            pm.style.opacity = "1";
+            pm.classList.add('walking');
+            pm.style.transition = "left 3s linear";
+            pm.style.left = "50%";
+            pm.style.transform = "translateX(-50%)";
             setTimeout(() => {
-                postman.classList.add('walking');
-                postman.style.transition = "left 3s linear";
-                postman.style.left = "50%"; 
-                postman.style.transform = "translateX(-50%)";
-            }, 300);
-            setTimeout(() => {
-                postman.classList.remove('walking');
+                pm.classList.remove('walking');
                 document.querySelector('.bubble').style.opacity = "1";
-            }, 3300);
+            }, 3100);
         }
 
-        function showEnvelope() {
+        function showLetter() {
             document.getElementById('letter-overlay').style.display = 'flex';
-            // Sicherstellen, dass der geschlossene Zustand am Anfang da ist
-            document.getElementById('closedBox').style.display = 'flex';
-            document.getElementById('hint').style.display = 'block';
-            document.getElementById('openedPaper').style.display = 'none';
         }
 
-        // Ganz simple Funktion: Umschlag weg, Papier her
-        function openSimpleLetter() {
-            document.getElementById('closedBox').style.display = 'none';
-            document.getElementById('hint').style.display = 'none';
-            document.getElementById('openedPaper').style.display = 'block';
-        }
-        
-        // Andersherum
-        function closeSimpleLetter() {
-            document.getElementById('openedPaper').style.display = 'none';
-            document.getElementById('closedBox').style.display = 'flex';
-            document.getElementById('hint').style.display = 'block';
-            setTimeout(() => { document.getElementById('letter-overlay').style.display = 'none'; }, 100);
+        function openLetter() {
+            // Tauscht den Umschlag gegen das Papier aus
+            document.getElementById('envelope-closed').style.display = 'none';
+            document.getElementById('letter-paper').style.display = 'block';
         }
     </script>
 </body>
