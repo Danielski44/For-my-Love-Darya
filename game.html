@@ -5,50 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sammle Momente</title>
     <style>
-        body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: sans-serif; text-align: center; touch-action: none; }
-        h2 { color: #ff4d6d; padding-top: 20px; position: relative; z-index: 100; pointer-events: none; }
-        .moment {
-            position: absolute; width: 180px; height: 180px; object-fit: cover; 
-            border-radius: 20px; border: 6px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            cursor: pointer; transition: opacity 0.4s, transform 0.2s;
-        }
+        body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: sans-serif; text-align: center; }
+        h2 { color: #ff4d6d; margin-top: 20px; font-size: 1.8rem; position: relative; z-index: 100; pointer-events: none; }
         
-        /* EXTREM LANGSAME BEWEGUNG (120 Sekunden!) */
-        .crawl { animation: crawlAnim 120s infinite linear alternate; }
-        @keyframes crawlAnim {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(30vw, 20vh); }
-            100% { transform: translate(-10vw, 40vh); }
+        .moment {
+            position: absolute; width: 160px; height: 160px; object-fit: cover; 
+            border-radius: 20px; border: 5px solid white; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            cursor: pointer; transition: transform 0.3s, opacity 0.5s;
         }
 
-        .found { opacity: 0; transform: scale(0) !important; pointer-events: none; }
-        #next-btn { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff4d6d; color: white; padding: 25px 60px; border-radius: 60px; text-decoration: none; font-size: 2rem; z-index: 2000; box-shadow: 0 15px 30px rgba(255, 77, 109, 0.4); }
+        /* Hover Effekt: Bild wird kurz größer wenn man mit der Maus drauf ist */
+        .moment:hover { transform: scale(1.1); z-index: 50; border-color: #ff4d6d; }
+
+        /* Animation: Extrem langsam (60s) */
+        .float { animation: floating 60s infinite linear alternate; }
+
+        @keyframes floating {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(20px, 30px); }
+            50% { transform: translate(-20px, 10px); }
+            75% { transform: translate(10px, -20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Wenn angeklickt */
+        .found { transform: scale(0) rotate(360deg); opacity: 0; pointer-events: none; }
+
+        #next-btn {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #ff4d6d; color: white; padding: 20px 40px; border-radius: 50px;
+            text-decoration: none; font-size: 1.5rem; z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
-    <h2>Sammle alle 10 Momente! (<span id="count">0</span>/10)</h2>
+    <h2>Klicke unsere 10 Momente an ❤️ (<span id="count">0</span>/10)</h2>
+    
     <div id="game-area">
-        <img src="1.jpeg" class="moment crawl" style="top:10%; left:10%;" onclick="hit(this)">
-        <img src="2.jpeg" class="moment crawl" style="top:25%; left:60%; animation-delay: -10s;" onclick="hit(this)">
-        <img src="3.jpeg" class="moment crawl" style="top:50%; left:15%; animation-delay: -20s;" onclick="hit(this)">
-        <img src="4.jpeg" class="moment crawl" style="top:70%; left:65%; animation-delay: -30s;" onclick="hit(this)">
-        <img src="5.jpeg" class="moment crawl" style="top:40%; left:35%; animation-delay: -40s;" onclick="hit(this)">
-        <img src="6.jpeg" class="moment crawl" style="top:5%; left:40%; animation-delay: -50s;" onclick="hit(this)">
-        <img src="7.jpeg" class="moment crawl" style="top:65%; left:80%; animation-delay: -60s;" onclick="hit(this)">
-        <img src="8.jpeg" class="moment crawl" style="top:85%; left:25%; animation-delay: -70s;" onclick="hit(this)">
-        <img src="9.jpeg" class="moment crawl" style="top:10%; left:85%; animation-delay: -80s;" onclick="hit(this)">
-        <img src="10.jpeg" class="moment crawl" style="top:45%; left:75%; animation-delay: -90s;" onclick="hit(this)">
+        <img src="1.jpeg" class="moment float" style="top:10%; left:10%; animation-delay: 0s;" onclick="hit(this)">
+        <img src="2.jpeg" class="moment float" style="top:20%; left:60%; animation-delay: -5s;" onclick="hit(this)">
+        <img src="3.jpeg" class="moment float" style="top:50%; left:15%; animation-delay: -10s;" onclick="hit(this)">
+        <img src="4.jpeg" class="moment float" style="top:70%; left:70%; animation-delay: -15s;" onclick="hit(this)">
+        <img src="5.jpeg" class="moment float" style="top:40%; left:40%; animation-delay: -20s;" onclick="hit(this)">
+        <img src="6.jpeg" class="moment float" style="top:5%; left:40%; animation-delay: -25s;" onclick="hit(this)">
+        <img src="7.jpeg" class="moment float" style="top:60%; left:80%; animation-delay: -30s;" onclick="hit(this)">
+        <img src="8.jpeg" class="moment float" style="top:80%; left:20%; animation-delay: -35s;" onclick="hit(this)">
+        <img src="9.jpeg" class="moment float" style="top:15%; left:80%; animation-delay: -40s;" onclick="hit(this)">
+        <img src="10.jpeg" class="moment float" style="top:35%; left:75%; animation-delay: -45s;" onclick="hit(this)">
     </div>
-    <a href="video.html" id="next-btn">Weiter ❤️</a>
+
+    <a href="video.html" id="next-btn">Weiter zum Video 🎥</a>
 
     <script>
-        let c = 0;
-        function hit(e) {
-            if(!e.classList.contains('found')) {
-                e.classList.add('found');
-                c++;
-                document.getElementById('count').innerText = c;
-                if(c === 10) document.getElementById('next-btn').style.display = 'block';
+        let count = 0;
+        function hit(el) {
+            if (!el.classList.contains('found')) {
+                el.classList.add('found');
+                count++;
+                document.getElementById('count').innerText = count;
+                if (count === 10) {
+                    document.getElementById('next-btn').style.display = "block";
+                }
             }
         }
     </script>
