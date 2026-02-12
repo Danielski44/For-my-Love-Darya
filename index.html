@@ -171,4 +171,19 @@
         }
 
         // Einfacher Wechsel zwischen geschlossen und offen
-        function openTheLetter
+        function openTheLetter() {
+            document.getElementById('closed-envelope').style.display = 'none';
+            document.getElementById('opened-letter').style.display = 'block';
+        }
+
+        function resetLetter() {
+            // Schließt das Overlay und setzt den Brief zurück
+            document.getElementById('letter-overlay').style.display = 'none';
+            setTimeout(() => {
+                document.getElementById('opened-letter').style.display = 'none';
+                document.getElementById('closed-envelope').style.display = 'flex';
+            }, 500);
+        }
+    </script>
+</body>
+</html>
