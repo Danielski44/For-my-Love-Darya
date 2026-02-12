@@ -6,26 +6,23 @@
     <title>Erinnerung</title>
     <style>
         body { background-color: #fff5f6; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
-        video { width: 90%; max-width: 500px; border-radius: 15px; border: 4px solid #ff4d6d; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .quiz-box { margin-top: 20px; text-align: center; background: white; padding: 20px; border-radius: 20px; }
+        video { width: 90%; max-width: 500px; border-radius: 15px; border: 4px solid #ff4d6d; }
+        .quiz-box { margin-top: 20px; text-align: center; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         input { padding: 10px; border: 2px solid #ff4d6d; border-radius: 5px; outline: none; }
-        button { padding: 10px 20px; background: #ff4d6d; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button { padding: 10px 20px; background: #ff4d6d; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-left: 5px; }
     </style>
 </head>
 <body>
-    <video controls autoplay>
-        <source src="unser-video.mp4" type="video/mp4">
-    </video>
+    <video controls autoplay><source src="unser-video.mp4" type="video/mp4"></video>
     <div class="quiz-box">
-        <p>In welchem Land war dieser wunderschöne gemeinsame Urlaub?</p>
-        <input type="text" id="answer" placeholder="Antwort...">
+        <p>Auf welcher Insel war dieser wunderschöne gemeinsame Urlaub?</p>
+        <input type="text" id="answer" placeholder="Inselname...">
         <button onclick="check()">Weiter</button>
         <p id="error" style="color:red; display:none; margin-top:10px;">Leider falsch! Tipp: Es fängt mit K an...</p>
     </div>
     <script>
         function check() {
-            const val = document.getElementById('answer').value.toLowerCase().trim();
-            if(val === "korfu") {
+            if(document.getElementById('answer').value.toLowerCase().trim() === "korfu") {
                 window.location.href = "success.html";
             } else {
                 document.getElementById('error').style.display = "block";
