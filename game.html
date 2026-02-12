@@ -12,17 +12,19 @@
             position: absolute; width: 170px; height: 170px; object-fit: cover; 
             border-radius: 20px; border: 5px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             cursor: pointer; transition: transform 0.3s, opacity 0.5s;
-            /* Startposition rechts außerhalb */
-            left: 100vw; 
+            /* WICHTIG: Startposition wird durch Animation definiert */
         }
         .moment:hover { transform: scale(1.1); z-index: 50; }
 
-        /* DIE NEUE ANIMATION: Von Rechts nach Links */
-        .swim { animation: swimLeft 90s linear infinite; }
+        /* DIE NEUE, KLARE ANIMATION: Von Rechts nach Links */
+        .swim { 
+            /* 90 Sekunden Dauer, linearer Ablauf, unendlich */
+            animation: swimLeft 90s linear infinite; 
+        }
 
         @keyframes swimLeft {
-            from { transform: translateX(0); }
-            to { transform: translateX(-130vw); } /* Weit genug nach links */
+            0% { transform: translateX(110vw); } /* Start: Rechts außerhalb */
+            100% { transform: translateX(-120vw); } /* Ende: Links außerhalb */
         }
 
         .found { transform: scale(0) rotate(360deg); opacity: 0; pointer-events: none; }
@@ -33,15 +35,15 @@
     <h2>Klicke unsere 10 Momente an ❤️ (<span id="count">0</span>/10)</h2>
     <div id="game-area">
         <img src="1.jpeg" class="moment swim" style="top:10%; animation-delay: 0s;" onclick="hit(this)">
-        <img src="2.jpeg" class="moment swim" style="top:30%; animation-delay: -8s;" onclick="hit(this)">
-        <img src="3.jpeg" class="moment swim" style="top:50%; animation-delay: -16s;" onclick="hit(this)">
-        <img src="4.jpeg" class="moment swim" style="top:70%; animation-delay: -24s;" onclick="hit(this)">
-        <img src="5.jpeg" class="moment swim" style="top:20%; animation-delay: -32s;" onclick="hit(this)">
-        <img src="6.jpeg" class="moment swim" style="top:60%; animation-delay: -40s;" onclick="hit(this)">
-        <img src="7.jpeg" class="moment swim" style="top:40%; animation-delay: -48s;" onclick="hit(this)">
-        <img src="8.jpeg" class="moment swim" style="top:80%; animation-delay: -56s;" onclick="hit(this)">
-        <img src="9.jpeg" class="moment swim" style="top:15%; animation-delay: -64s;" onclick="hit(this)">
-        <img src="10.jpeg" class="moment swim" style="top:55%; animation-delay: -72s;" onclick="hit(this)">
+        <img src="2.jpeg" class="moment swim" style="top:30%; animation-delay: -9s;" onclick="hit(this)">
+        <img src="3.jpeg" class="moment swim" style="top:50%; animation-delay: -18s;" onclick="hit(this)">
+        <img src="4.jpeg" class="moment swim" style="top:70%; animation-delay: -27s;" onclick="hit(this)">
+        <img src="5.jpeg" class="moment swim" style="top:20%; animation-delay: -36s;" onclick="hit(this)">
+        <img src="6.jpeg" class="moment swim" style="top:60%; animation-delay: -45s;" onclick="hit(this)">
+        <img src="7.jpeg" class="moment swim" style="top:40%; animation-delay: -54s;" onclick="hit(this)">
+        <img src="8.jpeg" class="moment swim" style="top:80%; animation-delay: -63s;" onclick="hit(this)">
+        <img src="9.jpeg" class="moment swim" style="top:15%; animation-delay: -72s;" onclick="hit(this)">
+        <img src="10.jpeg" class="moment swim" style="top:55%; animation-delay: -81s;" onclick="hit(this)">
     </div>
     <a href="quiz.html" id="next-btn">Weiter zum Quiz 🌸</a>
     <script>
