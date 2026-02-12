@@ -15,7 +15,7 @@
             z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .start-btn {
-            padding: 20px 50px; font-size: 1.5rem; background: white; color: #ff4d6d;
+            padding: 20px 60px; font-size: 1.8rem; background: white; color: #ff4d6d;
             border: 4px solid #ff4d6d; border-radius: 50px; cursor: pointer; font-weight: bold;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: pulseBtn 2s infinite;
         }
@@ -27,16 +27,15 @@
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
         .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
 
-        /* LKW & Postbote */
+        /* LKW (Fährt schneller/weiter) */
         .truck { 
             font-size: 180px; position: absolute; bottom: 18%; left: -400px; z-index: 2; 
-            transition-timing-function: linear; /* Wichtig für gleichmäßige Fahrt */
+            /* Linear für gleichmäßige Fahrt */
+            transition-timing-function: linear; 
         }
         
-        .postman-wrapper { 
-            position: absolute; bottom: 15%; left: 35%; /* Startet beim LKW */
-            height: 200px; width: 120px; z-index: 3; opacity: 0; 
-        }
+        /* Postbote */
+        .postman-wrapper { position: absolute; bottom: 15%; left: 40%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
         .pm-part { position: absolute; font-size: 90px; text-align: center; width: 100%; }
         .pm-head-container { top: 0; height: 60px; z-index: 10; transition: transform 0.5s; }
         .pm-head { display: block; }
@@ -55,7 +54,7 @@
         }
         .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* --- DER PERFEKTE BRIEF --- */
+        /* --- DER BRIEF (FIXED) --- */
         #letter-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
@@ -64,18 +63,20 @@
         .envelope-container {
             position: relative; width: 320px; height: 220px; cursor: pointer;
             transition: transform 0.3s;
+            margin-top: 50px; /* Platz nach oben für das Papier */
         }
         .envelope-container:hover { transform: scale(1.05); }
 
         /* Umschlag Tasche (Vorne) */
-        .envelope-pocket {
+        .envelope-body {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
             background-color: #ffffff; border-radius: 0 0 10px 10px;
             z-index: 10; /* Vor dem Papier */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 2px solid #ddd;
         }
-        /* Dreiecke für Umschlag-Look */
-        .envelope-pocket::after {
+        /* Dreiecke-Optik */
+        .envelope-body::after {
             content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(to top right, #f2f2f2 50%, transparent 50%) bottom left no-repeat,
                         linear-gradient(to top left, #f2f2f2 50%, transparent 50%) bottom right no-repeat;
@@ -89,39 +90,43 @@
             clip-path: polygon(0 0, 100% 0, 50% 55%);
             transform-origin: top; transition: transform 0.6s ease-in-out, z-index 0.6s;
             z-index: 11; /* Ganz oben am Anfang */
+            border-top: 2px solid #ccc;
         }
 
-        /* Herz Siegel */
+        /* Herz Siegel (ROT & SICHTBAR) */
         .heart-seal {
-            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 50px; z-index: 12; transition: opacity 0.3s; animation: pulseBtn 1.5s infinite;
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 60px; color: red; z-index: 12; 
+            transition: opacity 0.3s; animation: pulseBtn 1.5s infinite;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* Das Papier (Hinter Pocket, unter Flap) */
+        /* Das Papier */
         .letter-paper {
-            position: absolute; bottom: 5px; left: 5%; width: 90%; height: 95%;
-            background: #fff; padding: 15px; box-sizing: border-box;
+            position: absolute; bottom: 0; left: 5%; width: 90%; height: 100%;
+            background: #fff; padding: 20px; box-sizing: border-box;
             text-align: center; border-radius: 5px;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.8s 0.3s ease-in-out; 
-            z-index: 5; /* WICHTIG: Startet hinter Pocket (10) */
+            transition: transform 0.8s 0.4s ease-in-out; 
+            z-index: 1; /* HINTER der Tasche starten */
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
         .letter-content { opacity: 0; transition: opacity 0.5s 1s; width: 100%; }
-        .letter-text { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.8rem; margin-bottom: 15px; line-height: 1.2; }
+        .letter-text { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.8rem; margin-bottom: 20px; line-height: 1.2; }
 
-        /* Buttons - BUGFIX: Z-Index sicherstellen */
-        .btn-group { display: flex; gap: 15px; justify-content: center; position: relative; z-index: 50; }
-        .btn { padding: 10px 30px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        /* Buttons (Bugfix: Pointer Events) */
+        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 10px; }
+        .btn { padding: 10px 30px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; pointer-events: auto; }
         .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 5px 10px rgba(255,77,109,0.3); }
         .yes:hover { transform: scale(1.1); background: #ff2a55; }
         .no { background: #eee; color: #555; }
 
-        /* Klassen für Animation */
-        .open .envelope-flap { transform: rotateX(180deg); z-index: 1; } /* Lasche nach hinten */
+        /* OPEN CLASSES */
+        .open .envelope-flap { transform: rotateX(180deg); z-index: 0; } 
         .open .heart-seal { opacity: 0; }
-        /* Papier fährt WEIT nach oben und bekommt hohen Z-Index */
+        
+        /* Papier fährt SEHR WEIT nach oben und bekommt HÖCHSTEN Index */
         .open .letter-paper { transform: translateY(-150px); z-index: 20; } 
         .open .letter-content { opacity: 1; }
 
@@ -160,7 +165,7 @@
     <div id="letter-overlay">
         <div class="envelope-container" id="myEnvelope" onclick="openEnvelopeAnim()">
             <div class="envelope-flap"></div>
-            <div class="envelope-pocket"></div>
+            <div class="envelope-body"></div>
             <div class="envelope-heart">❤️</div>
             
             <div class="letter-paper">
@@ -173,7 +178,7 @@
                 </div>
             </div>
             
-            <p id="hint" style="position: absolute; bottom: -50px; width: 100%; text-align: center; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">(Klicke zum Öffnen)</p>
+            <p id="hint" style="position: absolute; bottom: -50px; width: 100%; text-align: center; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">(Klicke auf das Herz)</p>
         </div>
     </div>
 
@@ -183,24 +188,24 @@
             document.getElementById('scene').style.display = 'block';
             
             const audio = document.getElementById('truckSound');
-            const truck = document.getElementById('truck');
-
+            
+            // Audio Versuch
             let playPromise = audio.play();
             
             if (playPromise !== undefined) {
                 playPromise.then(_ => {
-                    // Audio läuft -> Dauer auslesen
+                    // Audio läuft - wir nutzen die echte Dauer
                     let duration = audio.duration;
                     if(!duration || isNaN(duration) || duration === Infinity) duration = 8;
                     
                     driveTruck(duration);
 
-                    // GENAUES TIMING: Wenn Audio endet -> Postbote
+                    // WARTE AUF ENDE DER MUSIK
                     audio.onended = function() {
                         spawnPostman();
                     };
                 }).catch(e => {
-                    // Notfall ohne Audio
+                    // Falls Audio blockiert oder fehlt
                     driveTruck(8);
                     setTimeout(spawnPostman, 8000);
                 });
@@ -212,13 +217,11 @@
 
         function driveTruck(duration) {
             const truck = document.getElementById('truck');
-            // Transition genau so lang wie Audio
+            // Transition Dauer = Audio Dauer
             truck.style.transition = `left ${duration}s linear`;
             
-            setTimeout(() => { 
-                // Ziel: 35% (Viel weiter im Bild als vorher, damit er "schneller" wirkt)
-                truck.style.left = "35%"; 
-            }, 50);
+            // Fährt jetzt bis 40% (weiter in die Mitte = wirkt schneller)
+            setTimeout(() => { truck.style.left = "40%"; }, 50);
         }
 
         function spawnPostman() {
@@ -230,7 +233,7 @@
                 postman.style.transition = "left 3s linear";
                 postman.style.left = "50%"; // Mitte
                 postman.style.transform = "translateX(-50%)";
-            }, 300); // Kurze Pause nach Aussteigen
+            }, 300);
 
             setTimeout(() => {
                 postman.classList.remove('walking');
