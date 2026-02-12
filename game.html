@@ -7,32 +7,41 @@
     <style>
         body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: sans-serif; text-align: center; }
         h2 { color: #ff4d6d; margin-top: 20px; z-index: 100; position: relative; }
+        
         .moment {
             position: absolute; width: 170px; height: 170px; object-fit: cover; 
             border-radius: 20px; border: 5px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            cursor: pointer; transition: transform 0.3s;
+            cursor: pointer; transition: transform 0.3s, opacity 0.5s;
+            /* Startposition rechts außerhalb */
+            left: 100vw; 
         }
         .moment:hover { transform: scale(1.1); z-index: 50; }
-        /* Sehr langsame Bewegung */
-        .float { animation: floating 90s infinite linear alternate; }
-        @keyframes floating { 0% { transform: translate(0, 0); } 100% { transform: translate(20px, 40px); } }
-        .found { transform: scale(0) rotate(360deg); opacity: 0; pointer-events: none; transition: 0.5s; }
+
+        /* DIE NEUE ANIMATION: Von Rechts nach Links */
+        .swim { animation: swimLeft 90s linear infinite; }
+
+        @keyframes swimLeft {
+            from { transform: translateX(0); }
+            to { transform: translateX(-130vw); } /* Weit genug nach links */
+        }
+
+        .found { transform: scale(0) rotate(360deg); opacity: 0; pointer-events: none; }
         #next-btn { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff4d6d; color: white; padding: 20px 40px; border-radius: 50px; text-decoration: none; font-size: 1.5rem; z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
     <h2>Klicke unsere 10 Momente an ❤️ (<span id="count">0</span>/10)</h2>
     <div id="game-area">
-        <img src="1.jpeg" class="moment float" style="top:10%; left:10%;" onclick="hit(this)">
-        <img src="2.jpeg" class="moment float" style="top:20%; left:60%;" onclick="hit(this)">
-        <img src="3.jpeg" class="moment float" style="top:50%; left:15%;" onclick="hit(this)">
-        <img src="4.jpeg" class="moment float" style="top:70%; left:70%;" onclick="hit(this)">
-        <img src="5.jpeg" class="moment float" style="top:40%; left:40%;" onclick="hit(this)">
-        <img src="6.jpeg" class="moment float" style="top:5%; left:40%;" onclick="hit(this)">
-        <img src="7.jpeg" class="moment float" style="top:60%; left:80%;" onclick="hit(this)">
-        <img src="8.jpeg" class="moment float" style="top:80%; left:20%;" onclick="hit(this)">
-        <img src="9.jpeg" class="moment float" style="top:15%; left:80%;" onclick="hit(this)">
-        <img src="10.jpeg" class="moment float" style="top:35%; left:75%;" onclick="hit(this)">
+        <img src="1.jpeg" class="moment swim" style="top:10%; animation-delay: 0s;" onclick="hit(this)">
+        <img src="2.jpeg" class="moment swim" style="top:30%; animation-delay: -8s;" onclick="hit(this)">
+        <img src="3.jpeg" class="moment swim" style="top:50%; animation-delay: -16s;" onclick="hit(this)">
+        <img src="4.jpeg" class="moment swim" style="top:70%; animation-delay: -24s;" onclick="hit(this)">
+        <img src="5.jpeg" class="moment swim" style="top:20%; animation-delay: -32s;" onclick="hit(this)">
+        <img src="6.jpeg" class="moment swim" style="top:60%; animation-delay: -40s;" onclick="hit(this)">
+        <img src="7.jpeg" class="moment swim" style="top:40%; animation-delay: -48s;" onclick="hit(this)">
+        <img src="8.jpeg" class="moment swim" style="top:80%; animation-delay: -56s;" onclick="hit(this)">
+        <img src="9.jpeg" class="moment swim" style="top:15%; animation-delay: -64s;" onclick="hit(this)">
+        <img src="10.jpeg" class="moment swim" style="top:55%; animation-delay: -72s;" onclick="hit(this)">
     </div>
     <a href="quiz.html" id="next-btn">Weiter zum Quiz 🌸</a>
     <script>
