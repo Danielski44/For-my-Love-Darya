@@ -2,15 +2,35 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Unser Video</title>
+    <title>Unser Video Quiz</title>
     <style>
-        body { background-color: #000; margin: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
-        video { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 2px solid #ff4d6d; }
-        .btn { margin-top: 25px; color: #ff4d6d; text-decoration: none; border: 2px solid #ff4d6d; padding: 12px 30px; border-radius: 50px; font-family: sans-serif; font-weight: bold; }
+        body { background-color: #fff5f6; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: sans-serif; }
+        video { width: 90%; max-width: 600px; border-radius: 15px; border: 3px solid #ff4d6d; }
+        .quiz-container { margin-top: 20px; text-align: center; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        input { padding: 10px; border: 2px solid #ff4d6d; border-radius: 10px; outline: none; font-size: 1rem; }
+        button { padding: 10px 20px; background: #ff4d6d; color: white; border: none; border-radius: 10px; margin-left: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
+
     <video controls autoplay><source src="unser-video.mp4" type="video/mp4"></video>
-    <a href="success.html" class="btn">Weiter zum Abschluss ❤️</a>
+
+    <div class="quiz-container">
+        <p>In welchem Land war diese wunderschöne gemeinsame Urlaub?</p>
+        <input type="text" id="answer" placeholder="Antwort eingeben...">
+        <button onclick="checkAnswer()">Prüfen</button>
+        <p id="error" style="color: red; display: none; font-size: 0.8rem; margin-top: 10px;">Leider falsch, mein Schatz! Überleg nochmal. ❤️</p>
+    </div>
+
+    <script>
+        function checkAnswer() {
+            const ans = document.getElementById('answer').value.trim().toLowerCase();
+            if (ans === "korfu") {
+                window.location.href = "success.html";
+            } else {
+                document.getElementById('error').style.display = "block";
+            }
+        }
+    </script>
 </body>
 </html>
