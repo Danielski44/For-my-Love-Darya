@@ -11,64 +11,51 @@
         .moment {
             position: absolute; width: 170px; height: 170px; object-fit: cover; 
             border-radius: 20px; border: 5px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            cursor: pointer; transition: transform 0.2s;
-            left: 50%; top: 50%; /* Start in Mitte */
+            cursor: pointer; transition: transform 0.3s;
+            /* Standard-Position, falls JS versagt */
+            left: 50%; top: 50%; transform: translate(-50%, -50%);
         }
-        .moment:hover { transform: scale(1.1); z-index: 150; border-color: #ff4d6d; }
+        .moment:hover { transform: scale(1.1) !important; z-index: 150; border-color: #ff4d6d; }
 
-        /* VERSCHIEDENE RANDOM SCHWIMM-PFADE */
+        /* GANZ SANFTES SCHWIMMEN (Auf der Stelle) */
+        /* Verschiedene Variationen, damit es natürlich aussieht */
         
-        /* Pfad 1: Kreisähnlich */
-        @keyframes float1 {
-            0% { transform: translate(-40vw, -30vh); }
-            25% { transform: translate(30vw, -10vh); }
-            50% { transform: translate(10vw, 30vh); }
-            75% { transform: translate(-30vw, 10vh); }
-            100% { transform: translate(-40vw, -30vh); }
+        @keyframes gentleFloat1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(10px, -15px) rotate(2deg); }
+            66% { transform: translate(-10px, 10px) rotate(-2deg); }
         }
-        /* Pfad 2: Diagonale 8 */
-        @keyframes float2 {
-            0% { transform: translate(30vw, 30vh); }
-            50% { transform: translate(-30vw, -30vh); }
-            100% { transform: translate(30vw, 30vh); }
+        @keyframes gentleFloat2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-15px, -10px) rotate(-1deg); }
         }
-        /* Pfad 3: Weites Oval */
-        @keyframes float3 {
-            0% { transform: translate(0, -40vh); }
-            50% { transform: translate(40vw, 40vh); }
-            100% { transform: translate(-40vw, 40vh); }
-        }
-        /* Pfad 4: Zickzack */
-        @keyframes float4 {
-            0% { transform: translate(-20vw, 0); }
-            33% { transform: translate(20vw, -40vh); }
-            66% { transform: translate(-10vw, 40vh); }
-            100% { transform: translate(-20vw, 0); }
+        @keyframes gentleFloat3 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(0, 20px); }
         }
 
-        /* Klassen zuweisen */
-        .m1 { animation: float1 35s infinite linear; }
-        .m2 { animation: float2 40s infinite ease-in-out; }
-        .m3 { animation: float3 45s infinite alternate; }
-        .m4 { animation: float4 38s infinite linear; }
+        /* Klassen zuweisen (sehr langsam: 8-12 Sekunden) */
+        .f1 { animation: gentleFloat1 10s ease-in-out infinite; }
+        .f2 { animation: gentleFloat2 12s ease-in-out infinite; }
+        .f3 { animation: gentleFloat3 9s ease-in-out infinite; }
         
-        .found { transform: scale(0) !important; opacity: 0; pointer-events: none; }
+        .found { transform: scale(0) !important; opacity: 0; pointer-events: none; transition: 0.5s; }
         #next-btn { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff4d6d; color: white; padding: 20px 40px; border-radius: 50px; text-decoration: none; font-size: 1.5rem; z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
     <h2>Klicke unsere 10 Momente an ❤️ (<span id="count">0</span>/10)</h2>
     <div id="game-area">
-        <img src="1.jpeg" class="moment m1" onclick="hit(this)">
-        <img src="2.jpeg" class="moment m2" onclick="hit(this)">
-        <img src="3.jpeg" class="moment m3" onclick="hit(this)">
-        <img src="4.jpeg" class="moment m4" onclick="hit(this)">
-        <img src="5.jpeg" class="moment m1" style="animation-duration: 30s;" onclick="hit(this)">
-        <img src="6.jpeg" class="moment m2" style="animation-direction: reverse;" onclick="hit(this)">
-        <img src="7.jpeg" class="moment m3" style="animation-duration: 50s;" onclick="hit(this)">
-        <img src="8.jpeg" class="moment m4" style="animation-direction: reverse;" onclick="hit(this)">
-        <img src="9.jpeg" class="moment m1" style="animation-delay: -10s;" onclick="hit(this)">
-        <img src="10.jpeg" class="moment m2" style="animation-delay: -15s;" onclick="hit(this)">
+        <img src="1.jpeg" class="moment f1" style="top:15%; left:15%;" onclick="hit(this)">
+        <img src="2.jpeg" class="moment f2" style="top:25%; left:65%; animation-delay: -2s;" onclick="hit(this)">
+        <img src="3.jpeg" class="moment f3" style="top:55%; left:20%; animation-delay: -5s;" onclick="hit(this)">
+        <img src="4.jpeg" class="moment f1" style="top:75%; left:75%; animation-delay: -1s;" onclick="hit(this)">
+        <img src="5.jpeg" class="moment f2" style="top:35%; left:45%; animation-delay: -8s;" onclick="hit(this)">
+        <img src="6.jpeg" class="moment f3" style="top:10%; left:55%; animation-delay: -3s;" onclick="hit(this)">
+        <img src="7.jpeg" class="moment f1" style="top:65%; left:85%; animation-delay: -6s;" onclick="hit(this)">
+        <img src="8.jpeg" class="moment f2" style="top:85%; left:30%; animation-delay: -4s;" onclick="hit(this)">
+        <img src="9.jpeg" class="moment f3" style="top:20%; left:85%; animation-delay: -9s;" onclick="hit(this)">
+        <img src="10.jpeg" class="moment f1" style="top:50%; left:70%; animation-delay: -7s;" onclick="hit(this)">
     </div>
     <a href="quiz.html" id="next-btn">Weiter zum Quiz 🌸</a>
     <script>
