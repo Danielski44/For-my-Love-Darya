@@ -3,202 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speziallieferung! 🚚</title>
+    <title>Speziallieferung aus den Bergen 🏔️</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #87CEEB; }
+        body { margin: 0; overflow: hidden; font-family: sans-serif; height: 100vh; background-color: #87CEEB; }
 
         /* Startscreen */
         #start-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
             z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .start-btn {
-            padding: 20px 50px; font-size: 1.5rem; background: white; color: #ff4d6d;
+            padding: 20px 60px; font-size: 1.5rem; background: white; color: #555;
             border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: pulse 2s infinite;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: 0.3s;
         }
+        .start-btn:hover { transform: scale(1.1); }
 
-        /* --- LANDSCHAFT (Berge & Tal) --- */
+        /* --- DIE BERGLANDSCHAFT --- */
         #scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; overflow: hidden; }
-        .sky { position: absolute; top:0; width: 100%; height: 60%; background: linear-gradient(to bottom, #87CEEB, #E0F7FA); }
-        .mountains {
-            position: absolute; bottom: 30%; width: 100%; height: 40%;
-            background: linear-gradient(to bottom, #7a8c99 20%, #a3b5c1 100%);
-            clip-path: polygon(0% 100%, 15% 40%, 35% 80%, 55% 20%, 80% 60%, 100% 30%, 100% 100%);
-            z-index: 1;
-        }
-        .valley { position: absolute; bottom: 0; width: 100%; height: 40%; background: #90EE90; z-index: 2; border-top: 5px solid #76c976; }
         
-        /* Die Straße (Perspektivisch) */
+        .sky { position: absolute; top:0; width: 100%; height: 100%; background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%); z-index: 0; }
+        
+        /* Die Berge (Schnee) */
+        .mountain-range {
+            position: absolute; bottom: 20%; width: 100%; height: 60%;
+            display: flex; justify-content: center; align-items: flex-end; z-index: 1;
+        }
+        .mountain {
+            width: 0; height: 0; border-left: 300px solid transparent; border-right: 300px solid transparent; border-bottom: 500px solid #708090;
+            position: relative; margin: 0 -150px;
+        }
+        .mountain::after { /* Schneekappe */
+            content: ""; position: absolute; top: 0; left: -300px;
+            border-left: 300px solid transparent; border-right: 300px solid transparent; border-bottom: 500px solid transparent;
+            border-top: 150px solid white; /* Der Schnee */
+            top: 152px; transform: scaleY(-1); /* Dreht das Dreieck um für die Spitze */
+        }
+        .m-small { transform: scale(0.6); z-index: 1; bottom: -50px; }
+        .m-big { transform: scale(1); z-index: 0; }
+
+        /* Die Straße (Perspektive) */
         .road-container {
             position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 600px; height: 100%; perspective: 1000px; z-index: 3; pointer-events: none;
+            width: 100%; height: 50%; z-index: 2;
+            perspective: 500px;
         }
         .road {
-            position: absolute; bottom: 0; width: 100%; height: 100%; background: #555;
-            transform: rotateX(60deg); /* Macht die Straße flach */
-            transform-origin: bottom;
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%) rotateX(60deg);
+            width: 200px; height: 1000px; background: #444;
             border-left: 10px solid #fff; border-right: 10px solid #fff;
+            transform-origin: top;
         }
-        .line { position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: repeating-linear-gradient(0deg, #fff, #fff 40px, transparent 40px, transparent 80px); animation: moveRoad 1s linear infinite; }
 
-
-        /* --- LKW & ANIMATION --- */
-        /* Container für die lange Fahrt */
-        .truck-drive-container {
+        /* --- DER LKW --- */
+        /* Startet oben auf dem Berg (klein) */
+        #truck-container {
             position: absolute; 
-            /* Startpunkt: Oben links, klein */
-            top: 30%; left: -10%; transform: scale(0.2);
-            z-index: 4;
-            opacity: 0; /* Erst unsichtbar */
+            top: 38%; left: 50%; transform: translate(-50%, 0) scale(0.1); 
+            z-index: 10; font-size: 100px;
+            transition: all 0.1s linear; /* Wird per JS gesteuert */
         }
 
-        /* Die eigentliche Fahrt-Animation (8 Sekunden) */
-        .driving {
-            opacity: 1;
-            animation: longDrive 8s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
-        }
-
-        @keyframes longDrive {
-            0% { top: 35%; left: -10%; transform: scale(0.2); }
-            40% { top: 38%; left: 30%; transform: scale(0.4); } /* Kurve */
-            100% { top: 55%; left: 15%; transform: scale(1); } /* Endposition */
-        }
-
-        .truck { font-size: 150px; }
-
-        /* --- POSTBOTE (Wie vorher, startet später) --- */
+        /* --- DER POSTBOTE --- */
         .postman-wrapper {
-            position: absolute; bottom: 25%; left: 25%; /* Position beim gestoppten Truck */
-            height: 200px; width: 120px; z-index: 5; opacity: 0;
+            position: absolute; bottom: 10%; left: 50%; /* Zielposition */
+            height: 250px; width: 150px; z-index: 20; opacity: 0;
+            transform: translateX(-50%);
         }
-        .pm-part { position: absolute; font-size: 80px; text-align: center; width: 100%; }
-        .pm-head-container { top: 0; height: 60px; z-index: 10; transform-style: preserve-3d; transition: transform 0.8s ease-in-out; }
+        .pm-part { position: absolute; font-size: 100px; text-align: center; width: 100%; }
+        .pm-head-container { top: 0; z-index: 10; transition: transform 0.5s; }
         .pm-head { display: block; }
-        .pm-body { top: 45px; z-index: 5; color: #0056b3; }
-        .pm-arm-left { top: 60px; left: -40px; z-index: 6; font-size: 60px; }
-        .pm-arm-right { top: 60px; left: 40px; z-index: 6; font-size: 60px; cursor: pointer; transition: 0.3s; }
-        .pm-arm-right:hover { transform: scale(1.2); }
-        .pm-legs { top: 110px; z-index: 4; }
-
-        /* Animationen & Zustände */
-        .walking-to-center { transition: left 3s linear; left: 50% !important; transform: translateX(-50%); }
-        .walking .pm-head-container { transform: rotateY(30deg); }
-        .walking .pm-legs { animation: legWalk 0.5s infinite alternate ease-in-out; }
-        .stopped .pm-head-container { transform: rotateY(0deg); }
-
-        @keyframes legWalk { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        @keyframes moveRoad { from { background-position: 0 0; } to { background-position: 0 80px; } }
-
-        /* Sprechblase */
-        .bubble {
-            position: absolute; top: -80px; left: -60px; width: 280px;
-            background: white; padding: 15px; border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-weight: bold;
-            opacity: 0; transition: opacity 0.5s; text-align: center; z-index: 20;
-        }
-        .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
-
-        /* Brief Overlay */
-        #letter-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
-        .envelope-card { background: #ff4d6d; padding: 5px; border-radius: 10px; width: 320px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.5s; }
-        .card-content { background: white; width: 90%; height: 90%; border-radius: 5px; text-align: center; display: flex; flex-direction: column; justify-content: center; opacity: 0; transition: 0.5s; padding: 10px; }
-        .open .card-content { opacity: 1; }
-        .open { transform: scale(1.2); height: 300px; background: white; border: 4px solid #ff4d6d; }
-        .btn { padding: 8px 20px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; margin: 5px; }
-        .yes { background: #ff4d6d; color: white; text-decoration: none; }
-    </style>
-</head>
-<body>
-    <audio id="truckSound" loop><source src="lkw.mp3" type="audio/mpeg"></audio>
-
-    <div id="start-screen">
-        <h1>Für meine Dosienka ❤️</h1>
-        <button class="start-btn" onclick="startShow()">Starten</button>
-    </div>
-
-    <div id="scene">
-        <div class="sky"></div>
-        <div class="mountains"></div>
-        <div class="valley"></div>
-        <div class="road-container"><div class="road"><div class="line"></div></div></div>
-
-        <div class="truck-drive-container" id="truckContainer">
-            <div class="truck">🚚</div>
-        </div>
-
-        <div class="postman-wrapper" id="postman">
-            <div class="bubble">Ich habe Post für dich und deine Lieblingsblumen!</div>
-            <div class="pm-part pm-head-container"><span class="pm-head">👨‍✈️</span></div>
-            <div class="pm-part pm-body">👕</div>
-            <div class="pm-part pm-arm-left">💐🌷</div>
-            <div class="pm-part pm-arm-right" onclick="showLetter()">💌</div>
-            <div class="pm-part pm-legs">👖</div>
-        </div>
-    </div>
-
-    <div id="letter-overlay">
-        <div class="envelope-card" id="card" onclick="openCard()">
-            <div class="card-content">
-                <h2 style="font-family: 'Dancing Script'; color: #ff4d6d;">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</h2>
-                <div>
-                    <a href="game.html" class="btn yes">JA ❤️</a>
-                    <button class="btn" style="background:#eee;" onclick="event.stopPropagation(); closeCard()">Nein</button>
-                </div>
-            </div>
-            <div id="heart-cover" style="font-size:60px; position:absolute;">❤️</div>
-        </div>
-    </div>
-
-    <script>
-        function startShow() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('scene').style.display = 'block';
-            
-            const audio = document.getElementById('truckSound');
-            audio.play().catch(e => console.log(e));
-
-            const truckCont = document.getElementById('truckContainer');
-            const postman = document.getElementById('postman');
-            
-            // 1. Start der langen Fahrt (8 Sekunden)
-            truckCont.classList.add('driving');
-
-            // 2. Nach 8 Sekunden: Sound stop, Postbote Action
-            setTimeout(() => {
-                audio.pause(); // Sound stoppen
-                
-                // Postbote erscheint
-                postman.style.opacity = "1";
-                
-                // Kurze Pause, dann loslaufen
-                setTimeout(() => {
-                    postman.classList.add('walking', 'walking-to-center');
-                }, 500);
-
-                // Ankunft in Mitte (nach weiteren 3s Laufen)
-                setTimeout(() => {
-                    postman.classList.remove('walking');
-                    postman.classList.add('stopped');
-                    setTimeout(() => { document.querySelector('.bubble').style.opacity = "1"; }, 800);
-                }, 3500);
-
-            }, 8000); // WARTET 8 SEKUNDEN AUF DIE FAHRT
-        }
-
-        function showLetter() { document.getElementById('letter-overlay').style.display = 'flex'; }
-        function openCard() {
-            document.getElementById('card').classList.add('open');
-            document.getElementById('heart-cover').style.display = 'none';
-        }
-        function closeCard() {
-            document.getElementById('card').classList.remove('open');
-            document.getElementById('heart-cover').style.display = 'block';
-            setTimeout(() => { document.getElementById('letter-overlay').style.display = 'none'; }, 300);
-        }
-    </script>
-</body>
-</html>
+        .pm-body { top: 60px; z-index: 5; color: #004085; }
+        .pm-arm-left { top: 80px; left: -50px; z-index: 6; font-size: 80px; } /* Tulpen */
+        .pm-arm-right { top: 80px; left: 50px; z-index: 6
