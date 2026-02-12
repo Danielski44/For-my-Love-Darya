@@ -2,33 +2,36 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Unser Video Quiz</title>
+    <title>Erinnerungs-Check</title>
     <style>
         body { background-color: #fff5f6; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: sans-serif; }
-        video { width: 90%; max-width: 600px; border-radius: 15px; border: 3px solid #ff4d6d; }
-        .quiz-container { margin-top: 20px; text-align: center; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        input { padding: 10px; border: 2px solid #ff4d6d; border-radius: 10px; outline: none; font-size: 1rem; }
-        button { padding: 10px 20px; background: #ff4d6d; color: white; border: none; border-radius: 10px; margin-left: 5px; cursor: pointer; }
+        video { width: 90%; max-width: 600px; border-radius: 15px; border: 4px solid #ff4d6d; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .quiz { margin-top: 30px; text-align: center; background: white; padding: 30px; border-radius: 20px; border: 2px solid #ff4d6d; }
+        input { padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem; width: 200px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #ff4d6d; }
+        button { padding: 12px 25px; background: #ff4d6d; color: white; border: none; border-radius: 10px; margin-left: 10px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <video controls autoplay><source src="unser-video.mp4" type="video/mp4"></video>
+    <video id="v" controls autoplay><source src="unser-video.mp4" type="video/mp4"></video>
 
-    <div class="quiz-container">
-        <p>In welchem Land war diese wunderschöne gemeinsame Urlaub?</p>
-        <input type="text" id="answer" placeholder="Antwort eingeben...">
-        <button onclick="checkAnswer()">Prüfen</button>
-        <p id="error" style="color: red; display: none; font-size: 0.8rem; margin-top: 10px;">Leider falsch, mein Schatz! Überleg nochmal. ❤️</p>
+    <div class="quiz">
+        <p style="font-size: 1.1rem; color: #333;">In welchem Land war diese wunderschöne gemeinsame Urlaub?</p>
+        <input type="text" id="ans" placeholder="Land eingeben...">
+        <button onclick="check()">Prüfen</button>
+        <p id="msg" style="color: #ff4d6d; margin-top: 15px; font-weight: bold; display: none;"></p>
     </div>
 
     <script>
-        function checkAnswer() {
-            const ans = document.getElementById('answer').value.trim().toLowerCase();
-            if (ans === "korfu") {
+        function check() {
+            const input = document.getElementById('ans').value.trim().toLowerCase();
+            const msg = document.getElementById('msg');
+            if(input === "korfu") {
                 window.location.href = "success.html";
             } else {
-                document.getElementById('error').style.display = "block";
+                msg.innerText = "Das ist leider falsch, mein Schatz! Denk nochmal nach... ❤️";
+                msg.style.display = "block";
             }
         }
     </script>
