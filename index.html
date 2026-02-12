@@ -25,15 +25,7 @@
         .sun { position: absolute; top: 30px; right: 30px; width: 80px; height: 80px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 40px #FFD700; }
         .cloud { position: absolute; background: rgba(255,255,255,0.8); border-radius: 50px; animation: cloudMove 60s linear infinite; }
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
-        .road { 
-            position: absolute; bottom: 15%; width: 100%; height: 80px; background: #555; 
-            border-top: 3px solid #fff; border-bottom: 3px solid #fff;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .road::after {
-            content: ""; width: 100%; height: 4px;
-            background: repeating-linear-gradient(to right, white 0, white 40px, transparent 40px, transparent 80px);
-        }
+        .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
 
         /* LKW */
         .truck { 
@@ -61,11 +53,11 @@
             background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
         }
 
-        .envelope-wrapper {
+        .envelope-container {
             position: relative; width: 320px; height: 220px; cursor: pointer;
             transition: transform 0.3s; margin-top: 80px;
         }
-        .envelope-wrapper:hover { transform: scale(1.05); }
+        .envelope-container:hover { transform: scale(1.05); }
 
         /* Umschlag Tasche (Vorne) */
         .envelope-front {
@@ -96,16 +88,6 @@
             background: #fff; border-radius: 5px; z-index: 1;
         }
 
-        /* Das Herz - PERFEKT ZENTRIERT */
-        .heart-seal {
-            position: absolute; 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -100%); /* Zieht es exakt auf die Spitze der Lasche */
-            font-size: 60px; color: red; z-index: 30;
-            transition: opacity 0.3s; animation: pulseBtn 1.5s infinite;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
         /* Die Karte (Inhalt) */
         .letter-card {
             position: absolute; bottom: 0; left: 10px; width: 300px; height: 200px;
@@ -130,8 +112,9 @@
 
         /* Animation Klassen */
         .open .envelope-flap { transform: rotateX(180deg); z-index: 0; }
-        .open .heart-seal { opacity: 0; }
-        .open .letter-card { transform: translateY(-150px); z-index: 100; }
+        
+        /* Karte fährt hoch und kriegt HÖCHSTEN Z-Index */
+        .open .letter-card { transform: translateY(-150px); z-index: 100; } 
         .open .letter-text, .open .btn-group { opacity: 1; }
 
         @keyframes legWalk { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
@@ -150,6 +133,7 @@
     <div id="scene">
         <div class="sun"></div>
         <div class="cloud" style="top: 15%; width: 100px; height: 40px;"></div>
+        <div class="cloud" style="top: 25%; width: 140px; height: 50px; left: 60%; animation-delay: -20s;"></div>
         <div class="grass"></div>
         <div class="road"></div>
         <div class="truck" id="truck">🚚</div>
@@ -176,7 +160,6 @@
             </div>
             <div class="envelope-front"></div>
             <div class="envelope-flap"></div>
-            <div class="heart-seal">❤️</div>
             <p id="hint" style="position: absolute; bottom: -40px; width: 100%; text-align: center; color: white; font-weight: bold;">(Klicke auf den Brief)</p>
         </div>
     </div>
