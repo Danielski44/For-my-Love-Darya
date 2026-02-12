@@ -27,12 +27,13 @@
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
         .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
 
-        /* LKW & Postbote */
+        /* LKW (Fährt weit rein) */
         .truck { 
             font-size: 180px; position: absolute; bottom: 18%; left: -400px; z-index: 2; 
             transition-timing-function: linear; 
         }
-        .postman-wrapper { position: absolute; bottom: 15%; left: 35%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
+        
+        .postman-wrapper { position: absolute; bottom: 15%; left: 40%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
         .pm-part { position: absolute; font-size: 90px; text-align: center; width: 100%; }
         .pm-head-container { top: 0; height: 60px; z-index: 10; transition: transform 0.5s; }
         .pm-head { display: block; }
@@ -45,45 +46,90 @@
         .bubble { position: absolute; top: -100px; left: -90px; width: 300px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-weight: bold; opacity: 0; transition: opacity 0.5s; text-align: center; z-index: 20; }
         .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* --- BRIEF OVERLAY --- */
+        /* --- DER BRIEF KOMPLEX --- */
         #letter-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
         }
 
-        /* ZUSTAND 1: Der geschlossene weiße Umschlag (REPARIERT) */
-        #closed-envelope {
-            width: 340px; height: 240px; 
-            background-color: #ffffff; /* Reinweiß */
-            border-radius: 15px; border: 4px solid #eee;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            transition: transform 0.3s; position: relative;
-        }
-        #closed-envelope:hover { transform: scale(1.05); }
-        
-        /* Das rote Herz in der Mitte (REPARIERT) */
-        .center-heart { 
-            font-size: 100px; /* Größer */
-            animation: pulseBtn 1.5s infinite;
-            position: relative; z-index: 10; /* Garantiert im Vordergrund */
-            /* Kein color: red nötig, das Emoji ist rot */
+        /* Container für die Animation */
+        .envelope-container {
+            position: relative; width: 320px; height: 220px; cursor: pointer;
+            transition: transform 0.3s; margin-top: 100px;
         }
         
-        /* ZUSTAND 2: Das geöffnete Papier */
-        #opened-letter {
-            display: none; /* Erst unsichtbar */
-            width: 340px; background: #fff; padding: 30px; box-sizing: border-box;
-            text-align: center; border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 4px solid #ff4d6d;
+        /* Der Umschlag (Tasche) */
+        .envelope-body {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ff4d6d; /* Rötlicher Umschlag */
+            border-radius: 0 0 10px 10px; z-index: 10;
         }
-        .letter-text { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 2rem; margin-bottom: 25px; line-height: 1.3; }
-        .btn-group { display: flex; gap: 15px; justify-content: center; }
-        .btn { padding: 12px 35px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; }
-        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; }
+        .envelope-body::after {
+            content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top right, #ff758f 50%, transparent 50%) bottom left no-repeat,
+                        linear-gradient(to top left, #ff758f 50%, transparent 50%) bottom right no-repeat;
+            background-size: 50% 100%; pointer-events: none; border-radius: 0 0 10px 10px;
+        }
+
+        /* Die Lasche (Klappt auf) */
+        .envelope-flap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ff3355; /* Etwas dunkler */
+            clip-path: polygon(0 0, 100% 0, 50% 55%);
+            transform-origin: top; transition: transform 0.6s ease-in-out, z-index 0.6s;
+            z-index: 11;
+        }
+
+        /* Das Herz Siegel */
+        .heart-seal {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 60px; color: red; z-index: 12; transition: opacity 0.3s; animation: pulseBtn 1.5s infinite;
+        }
+
+        /* --- DAS BLATT PAPIER (Wichtig!) --- */
+        .letter-paper {
+            position: absolute; bottom: 0; left: 5%; width: 90%; height: 95%;
+            background: #ffffff; /* Reinweiß */
+            padding: 30px; box-sizing: border-box;
+            text-align: center; border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            transition: all 1s ease-in-out; 
+            z-index: 1; /* Startet im Umschlag */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; /* Erst unsichtbar im Umschlag */
+        }
+
+        .letter-content { opacity: 0; transition: opacity 0.5s 1s; width: 100%; }
+        .letter-text { 
+            font-family: 'Dancing Script', cursive; color: #ff4d6d; 
+            font-size: 2rem; margin-bottom: 25px; line-height: 1.4; 
+        }
+
+        /* Buttons */
+        .btn-group { display: flex; gap: 20px; justify-content: center; }
+        .btn { padding: 12px 40px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; }
+        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 5px 15px rgba(255,77,109,0.3); }
         .yes:hover { transform: scale(1.1); }
         .no { background: #eee; color: #555; }
+
+        /* Animation Klassen */
+        .open .envelope-flap { transform: rotateX(180deg); z-index: 0; }
+        .open .heart-seal { opacity: 0; }
+        
+        /* Das Papier fährt raus und wird groß */
+        .open .letter-paper { 
+            opacity: 1;
+            transform: translateY(-50px) scale(1.2); 
+            z-index: 100; /* Ganz nach vorne */
+            height: 350px; /* Wird größer */
+        }
+        
+        /* Der Umschlag verblasst, damit man nur das Papier sieht */
+        .open .envelope-body, .open .envelope-flap {
+            opacity: 0; transition-delay: 0.8s; /* Verschwindet erst wenn Papier draußen ist */
+        }
+
+        .open .letter-content { opacity: 1; }
 
         @keyframes legWalk { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
         @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -110,23 +156,28 @@
             <div class="pm-part pm-head-container"><span class="pm-head">👨‍✈️</span></div>
             <div class="pm-part pm-body">👕</div>
             <div class="pm-part pm-arm-left">💐🌷</div>
-            <div class="pm-part pm-arm-right" onclick="showOverlay()">💌</div>
+            <div class="pm-part pm-arm-right" onclick="showEnvelope()">💌</div>
             <div class="pm-part pm-legs">👖</div>
         </div>
     </div>
 
     <div id="letter-overlay">
-        <div id="closed-envelope" onclick="openTheLetter()">
-            <div class="center-heart">❤️</div>
-            <p style="position: absolute; bottom: 15px; color: #999; font-size: 0.9rem; font-weight: bold;">(Klicke zum Öffnen)</p>
-        </div>
-
-        <div id="opened-letter">
-            <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
-            <div class="btn-group">
-                <a href="game.html" class="btn yes">JA ❤️</a>
-                <button class="btn no" onclick="resetLetter()">Nein</button>
+        <div class="envelope-container" id="myEnvelope" onclick="openEnvelopeAnim()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body"></div>
+            <div class="envelope-heart">❤️</div>
+            
+            <div class="letter-paper">
+                <div class="letter-content">
+                    <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
+                    <div class="btn-group">
+                        <a href="game.html" class="btn yes">JA ❤️</a>
+                        <button class="btn no" onclick="event.stopPropagation(); closeEnvelopeAnim()">Nein</button>
+                    </div>
+                </div>
             </div>
+            
+            <p id="hint" style="position: absolute; bottom: -50px; width: 100%; text-align: center; color: white; font-weight: bold;">(Klicke auf das Herz)</p>
         </div>
     </div>
 
@@ -155,7 +206,8 @@
         function driveTruck(duration) {
             const truck = document.getElementById('truck');
             truck.style.transition = `left ${duration}s linear`;
-            setTimeout(() => { truck.style.left = "35%"; }, 50);
+            // Fährt weit rein (40%)
+            setTimeout(() => { truck.style.left = "40%"; }, 50);
         }
 
         function spawnPostman() {
@@ -173,21 +225,19 @@
             }, 3300);
         }
 
-        function showOverlay() {
+        function showEnvelope() {
             document.getElementById('letter-overlay').style.display = 'flex';
         }
 
-        function openTheLetter() {
-            document.getElementById('closed-envelope').style.display = 'none';
-            document.getElementById('opened-letter').style.display = 'block';
+        function openEnvelopeAnim() {
+            document.getElementById('myEnvelope').classList.add('open');
+            document.getElementById('hint').style.display = 'none';
         }
-
-        function resetLetter() {
-            document.getElementById('letter-overlay').style.display = 'none';
-            setTimeout(() => {
-                document.getElementById('opened-letter').style.display = 'none';
-                document.getElementById('closed-envelope').style.display = 'flex';
-            }, 500);
+        
+        function closeEnvelopeAnim() {
+            document.getElementById('myEnvelope').classList.remove('open');
+            document.getElementById('hint').style.display = 'block';
+            setTimeout(() => { document.getElementById('letter-overlay').style.display = 'none'; }, 500);
         }
     </script>
 </body>
