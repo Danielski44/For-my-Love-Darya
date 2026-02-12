@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speziallieferung! 🚚</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; overflow: hidden; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #87CEEB; }
 
@@ -27,108 +27,108 @@
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
         .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
 
-        /* LKW (Fährt weit rein) */
-        .truck { 
-            font-size: 180px; position: absolute; bottom: 18%; left: -400px; z-index: 2; 
-            transition-timing-function: linear; 
-        }
+        /* LKW & Postbote */
+        .truck { font-size: 180px; position: absolute; bottom: 18%; left: -400px; z-index: 2; transition-timing-function: linear; }
         
-        .postman-wrapper { position: absolute; bottom: 15%; left: 40%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
+        .postman-wrapper { position: absolute; bottom: 15%; left: 35%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
         .pm-part { position: absolute; font-size: 90px; text-align: center; width: 100%; }
         .pm-head-container { top: 0; height: 60px; z-index: 10; transition: transform 0.5s; }
         .pm-head { display: block; }
         .pm-body { top: 50px; z-index: 5; color: #0056b3; }
         .pm-arm-left { top: 70px; left: -50px; z-index: 6; font-size: 70px; }
-        .pm-arm-right { top: 70px; left: 50px; z-index: 6; font-size: 70px; cursor: pointer; transition: 0.3s; pointer-events: auto; }
+        
+        /* DER KLEINE WEISSE BRIEF IN DER HAND */
+        .pm-arm-right { 
+            top: 85px; left: 60px; z-index: 6; cursor: pointer; transition: 0.3s; pointer-events: auto; 
+            width: 60px; height: 40px; background: white; border-radius: 5px; border: 2px solid #eee;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .pm-arm-right::after { content: "❤️"; font-size: 20px; } /* Kleines rotes Herz drauf */
         .pm-arm-right:hover { transform: scale(1.2); }
+
         .pm-legs { top: 120px; z-index: 4; }
         .walking .pm-legs { animation: legWalk 0.4s infinite alternate; }
         .bubble { position: absolute; top: -100px; left: -90px; width: 300px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-weight: bold; opacity: 0; transition: opacity 0.5s; text-align: center; z-index: 20; }
         .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* --- DER BRIEF KOMPLEX --- */
+        /* --- DER GROSSE BRIEF UMSCHLAG & PAPIER --- */
         #letter-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
         }
 
-        /* Container für die Animation */
+        /* Container für die gesamte Brief-Animation */
         .envelope-container {
             position: relative; width: 320px; height: 220px; cursor: pointer;
-            transition: transform 0.3s; margin-top: 100px;
+            transition: transform 0.3s; margin-top: 100px; /* Platz nach oben fürs Papier */
         }
-        
-        /* Der Umschlag (Tasche) */
-        .envelope-body {
+        .envelope-container:hover { transform: scale(1.02); }
+
+        /* Die vordere Tasche des Umschlags (Weiß) */
+        .envelope-pocket {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            background-color: #ff4d6d; /* Rötlicher Umschlag */
-            border-radius: 0 0 10px 10px; z-index: 10;
+            background-color: #ffffff; border-radius: 0 0 10px 10px;
+            z-index: 20; /* Muss vor dem Papier sein */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 2px solid #f0f0f0;
         }
-        .envelope-body::after {
+        /* Dreiecks-Optik für die Tasche */
+        .envelope-pocket::after {
             content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top right, #ff758f 50%, transparent 50%) bottom left no-repeat,
-                        linear-gradient(to top left, #ff758f 50%, transparent 50%) bottom right no-repeat;
+            background: linear-gradient(to top right, #f9f9f9 50%, transparent 50%) bottom left no-repeat,
+                        linear-gradient(to top left, #f9f9f9 50%, transparent 50%) bottom right no-repeat;
             background-size: 50% 100%; pointer-events: none; border-radius: 0 0 10px 10px;
         }
 
-        /* Die Lasche (Klappt auf) */
+        /* Die Lasche (Klappt auf) - Weiß */
         .envelope-flap {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #ff3355; /* Etwas dunkler */
+            background-color: #eee; /* Leicht dunkleres Weiß für Kontrast */
             clip-path: polygon(0 0, 100% 0, 50% 55%);
-            transform-origin: top; transition: transform 0.6s ease-in-out, z-index 0.6s;
-            z-index: 11;
+            transform-origin: top; transition: transform 0.6s ease-in-out;
+            z-index: 21; /* Ganz oben wenn geschlossen */
+            border-top: 2px solid #e0e0e0;
         }
 
-        /* Das Herz Siegel */
+        /* Das rote Herz Siegel */
         .heart-seal {
-            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 60px; color: red; z-index: 12; transition: opacity 0.3s; animation: pulseBtn 1.5s infinite;
+            position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 60px; color: red; z-index: 22; 
+            transition: opacity 0.3s; animation: pulseBtn 1.5s infinite;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* --- DAS BLATT PAPIER (Wichtig!) --- */
+        /* --- DAS A4 PAPIER (Fährt heraus) --- */
         .letter-paper {
-            position: absolute; bottom: 0; left: 5%; width: 90%; height: 95%;
-            background: #ffffff; /* Reinweiß */
-            padding: 30px; box-sizing: border-box;
+            position: absolute; 
+            /* Startposition: Versteckt IM Umschlag */
+            bottom: 5px; left: 5%; width: 90%; height: 95%; 
+            background: #fff; padding: 25px; box-sizing: border-box;
             text-align: center; border-radius: 5px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
-            transition: all 1s ease-in-out; 
-            z-index: 1; /* Startet im Umschlag */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
+            /* Animation: Fährt nach oben */
+            transition: transform 1s 0.4s ease-in-out; 
+            z-index: 10; /* HINTER der Tasche, aber VOR dem Hintergrund */
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; /* Erst unsichtbar im Umschlag */
         }
 
-        .letter-content { opacity: 0; transition: opacity 0.5s 1s; width: 100%; }
-        .letter-text { 
-            font-family: 'Dancing Script', cursive; color: #ff4d6d; 
-            font-size: 2rem; margin-bottom: 25px; line-height: 1.4; 
-        }
+        .letter-content { opacity: 0; transition: opacity 0.5s 1.2s; width: 100%; }
+        /* Schrift: Schön, aber nicht zu riesig */
+        .letter-text { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.6rem; margin-bottom: 20px; line-height: 1.4; font-weight: 700; }
 
-        /* Buttons */
-        .btn-group { display: flex; gap: 20px; justify-content: center; }
-        .btn { padding: 12px 40px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; }
-        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 5px 15px rgba(255,77,109,0.3); }
-        .yes:hover { transform: scale(1.1); }
+        .btn-group { display: flex; gap: 15px; justify-content: center; }
+        .btn { padding: 10px 30px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; pointer-events: auto; }
+        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 5px 10px rgba(255,77,109,0.3); }
+        .yes:hover { transform: scale(1.1); background: #ff2a55; }
         .no { background: #eee; color: #555; }
 
-        /* Animation Klassen */
-        .open .envelope-flap { transform: rotateX(180deg); z-index: 0; }
+        /* --- ANIMAITON ZUSTÄNDE (OPEN) --- */
+        /* 1. Lasche klappt auf */
+        .open .envelope-flap { transform: rotateX(180deg); z-index: 5; } 
+        /* 2. Herz verschwindet */
         .open .heart-seal { opacity: 0; }
-        
-        /* Das Papier fährt raus und wird groß */
-        .open .letter-paper { 
-            opacity: 1;
-            transform: translateY(-50px) scale(1.2); 
-            z-index: 100; /* Ganz nach vorne */
-            height: 350px; /* Wird größer */
-        }
-        
-        /* Der Umschlag verblasst, damit man nur das Papier sieht */
-        .open .envelope-body, .open .envelope-flap {
-            opacity: 0; transition-delay: 0.8s; /* Verschwindet erst wenn Papier draußen ist */
-        }
-
+        /* 3. Papier fährt weit nach oben heraus */
+        .open .letter-paper { transform: translateY(-180px); } 
+        /* 4. Text erscheint */
         .open .letter-content { opacity: 1; }
 
         @keyframes legWalk { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
@@ -151,94 +151,4 @@
         <div class="grass"></div>
         <div class="road"></div>
         <div class="truck" id="truck">🚚</div>
-        <div class="postman-wrapper" id="postman">
-            <div class="bubble">Ich habe Post für dich und deine Lieblingsblumen!</div>
-            <div class="pm-part pm-head-container"><span class="pm-head">👨‍✈️</span></div>
-            <div class="pm-part pm-body">👕</div>
-            <div class="pm-part pm-arm-left">💐🌷</div>
-            <div class="pm-part pm-arm-right" onclick="showEnvelope()">💌</div>
-            <div class="pm-part pm-legs">👖</div>
-        </div>
-    </div>
-
-    <div id="letter-overlay">
-        <div class="envelope-container" id="myEnvelope" onclick="openEnvelopeAnim()">
-            <div class="envelope-flap"></div>
-            <div class="envelope-body"></div>
-            <div class="envelope-heart">❤️</div>
-            
-            <div class="letter-paper">
-                <div class="letter-content">
-                    <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
-                    <div class="btn-group">
-                        <a href="game.html" class="btn yes">JA ❤️</a>
-                        <button class="btn no" onclick="event.stopPropagation(); closeEnvelopeAnim()">Nein</button>
-                    </div>
-                </div>
-            </div>
-            
-            <p id="hint" style="position: absolute; bottom: -50px; width: 100%; text-align: center; color: white; font-weight: bold;">(Klicke auf das Herz)</p>
-        </div>
-    </div>
-
-    <script>
-        function startShow() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('scene').style.display = 'block';
-            
-            const audio = document.getElementById('truckSound');
-            
-            let playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    let duration = audio.duration;
-                    if(!duration || isNaN(duration) || duration === Infinity) duration = 8;
-                    driveTruck(duration);
-                    audio.onended = function() { spawnPostman(); };
-                }).catch(e => {
-                    driveTruck(8); setTimeout(spawnPostman, 8000);
-                });
-            } else {
-                driveTruck(8); setTimeout(spawnPostman, 8000);
-            }
-        }
-
-        function driveTruck(duration) {
-            const truck = document.getElementById('truck');
-            truck.style.transition = `left ${duration}s linear`;
-            // Fährt weit rein (40%)
-            setTimeout(() => { truck.style.left = "40%"; }, 50);
-        }
-
-        function spawnPostman() {
-            const postman = document.getElementById('postman');
-            postman.style.opacity = "1";
-            setTimeout(() => {
-                postman.classList.add('walking');
-                postman.style.transition = "left 3s linear";
-                postman.style.left = "50%"; 
-                postman.style.transform = "translateX(-50%)";
-            }, 300);
-            setTimeout(() => {
-                postman.classList.remove('walking');
-                document.querySelector('.bubble').style.opacity = "1";
-            }, 3300);
-        }
-
-        function showEnvelope() {
-            document.getElementById('letter-overlay').style.display = 'flex';
-        }
-
-        function openEnvelopeAnim() {
-            document.getElementById('myEnvelope').classList.add('open');
-            document.getElementById('hint').style.display = 'none';
-        }
-        
-        function closeEnvelopeAnim() {
-            document.getElementById('myEnvelope').classList.remove('open');
-            document.getElementById('hint').style.display = 'block';
-            setTimeout(() => { document.getElementById('letter-overlay').style.display = 'none'; }, 500);
-        }
-    </script>
-</body>
-</html>
+        <div class="postman-wrapper" id="
