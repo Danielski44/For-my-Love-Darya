@@ -4,113 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garten Eden Quiz 🌸</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
-            /* Realistisches Hintergrundbild (Hochwertige Natur) */
-            background: url('https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed;
-            background-size: cover;
-            font-family: sans-serif;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 100vh; margin: 0;
-            overflow: hidden;
+            /* Weicher, romantischer Hintergrund */
+            background: linear-gradient(to bottom, #ffe4e1, #ffb6c1);
+            font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; margin: 0; overflow: hidden;
         }
 
-        /* Ein schimmernder Overlay für den "Paradies-Effekt" */
-        .paradise-overlay {
+        /* Container für die fliegenden Elemente */
+        #garden-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.3) 100%);
-            pointer-events: none; z-index: 1;
+            pointer-events: none; z-index: 0;
         }
 
-        /* Fliegende Lichtpartikel / Glühwürmchen */
-        .particle {
-            position: absolute; border-radius: 50%; background: white;
-            box-shadow: 0 0 10px white, 0 0 20px #fffacd;
-            opacity: 0.8; animation: floatUp linear infinite; z-index: 2;
+        /* Die fliegenden Herzen/Blumen */
+        .garden-item {
+            position: absolute; bottom: -50px;
+            animation: floatUp linear infinite;
+            opacity: 0.8;
         }
-        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-10vh) scale(1); opacity: 0; } }
+        @keyframes floatUp {
+            to { transform: translateY(-110vh) rotate(360deg); }
+        }
 
-        /* Die Quiz Karte */
+        /* Die Quiz Karte (leicht durchsichtig) */
         .quiz-card {
-            background: rgba(255, 255, 255, 0.85); /* Milchglas */
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
             padding: 40px; border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            max-width: 550px; width: 90%;
-            border: 2px solid rgba(255,255,255,0.6);
-            z-index: 10; position: relative; text-align: center;
+            box-shadow: 0 20px 50px rgba(255, 77, 109, 0.2);
+            max-width: 500px; width: 90%;
+            border: 3px solid #ff4d6d; z-index: 10; text-align: center;
+            position: relative;
         }
 
-        h1 { color: #2e8b57; margin-bottom: 20px; font-family: 'Dancing Script', cursive; font-size: 3rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        .intro-text { color: #555; font-size: 1.1rem; margin-bottom: 30px; font-style: italic; }
-
+        h1 { color: #ff4d6d; margin-bottom: 20px; font-family: sans-serif; text-transform: uppercase; letter-spacing: 1px; }
         .question { margin: 25px 0; text-align: left; }
-        label { font-weight: bold; display: block; margin-bottom: 8px; color: #333; font-size: 1.05rem; }
-        
+        label { font-weight: bold; display: block; margin-bottom: 8px; color: #555; }
         input {
-            width: 100%; padding: 12px; border: 2px solid #a8e6cf; border-radius: 15px;
+            width: 100%; padding: 12px; border: 2px solid #ffb6c1; border-radius: 15px;
             font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.3s;
             background: rgba(255,255,255,0.9);
         }
-        input:focus { border-color: #ff8b94; box-shadow: 0 0 15px rgba(255, 139, 148, 0.3); }
-        
+        input:focus { border-color: #ff4d6d; box-shadow: 0 0 10px rgba(255, 77, 109, 0.2); }
         button {
-            margin-top: 30px; padding: 15px 60px; background: linear-gradient(45deg, #ff9a9e, #fad0c4); 
-            color: white; border: none; border-radius: 50px; font-size: 1.3rem; cursor: pointer;
-            transition: 0.3s; font-weight: bold; box-shadow: 0 10px 20px rgba(255, 154, 158, 0.4);
+            margin-top: 25px; padding: 15px 50px; background: #ff4d6d; color: white;
+            border: none; border-radius: 50px; font-size: 1.2rem; cursor: pointer;
+            transition: 0.3s; font-weight: bold; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
         }
-        button:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255, 154, 158, 0.6); }
-        
-        #error-msg { color: #d32f2f; display: none; margin-top: 20px; font-weight: bold; font-size: 1.1rem; }
+        button:hover { transform: scale(1.05); background: #ff2a55; }
+        #error-msg { color: #d32f2f; display: none; margin-top: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="paradise-overlay"></div>
-
-    <script>
-        for(let i=0; i<20; i++) {
-            let p = document.createElement('div');
-            p.className = 'particle';
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.width = Math.random() * 5 + 2 + 'px';
-            p.style.height = p.style.width;
-            p.style.animationDuration = Math.random() * 10 + 5 + 's';
-            p.style.animationDelay = Math.random() * 5 + 's';
-            document.body.appendChild(p);
-        }
-    </script>
+    <div id="garden-container"></div>
 
     <div class="quiz-card">
-        <h1>🌿 Garten Eden 🌿</h1>
-        <p class="intro-text">Beantworte 3 Fragen um das Paradies zu öffnen...</p>
+        <h1>🌸 Garten Eden Quiz 🌸</h1>
+        <p style="color: #666;">Beantworte 3 Fragen, um ins Paradies zu gelangen...</p>
 
         <div class="question">
             <label>1. Wann sind wir zusammen gekommen? (TT.MM.JJJJ)</label>
-            <input type="text" id="q1" placeholder="Datum">
+            <input type="text" id="q1">
         </div>
-
         <div class="question">
             <label>2. Wo wollen wir in Zukunft zusammen wohnen?</label>
-            <input type="text" id="q2" placeholder="Land">
+            <input type="text" id="q2">
         </div>
-
         <div class="question">
             <label>3. Fährst du mit Danechka zum Barcelona Spiel auf das neue Camp Nou?</label>
-            <input type="text" id="q3" placeholder="Ja oder Nein">
+            <input type="text" id="q3">
         </div>
 
-        <button onclick="checkAnswers()">Eintreten ❤️</button>
-        <p id="error-msg">Nicht ganz richtig, mein Schatz! 🍃</p>
+        <button onclick="checkAnswers()">Prüfen & Weiter ❤️</button>
+        <p id="error-msg">Das war leider falsch, mein Schatz! 🍃</p>
     </div>
 
     <script>
+        // --- ANIMATION DES GARTENS ---
+        const garden = document.getElementById('garden-container');
+        const items = ['🌹', '🌷', '💐', '🌸', '🌺', '🌻', '❤️', '💖', '✨'];
+
+        function createItem() {
+            const el = document.createElement('div');
+            el.className = 'garden-item';
+            el.innerText = items[Math.floor(Math.random() * items.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.fontSize = Math.random() * 30 + 20 + 'px';
+            el.style.animationDuration = Math.random() * 5 + 5 + 's'; // 5-10s Dauer
+            el.style.animationDelay = Math.random() * 2 + 's';
+            garden.appendChild(el);
+            
+            // Aufräumen, damit es nicht zu viele werden
+            setTimeout(() => { el.remove(); }, 10000);
+        }
+        // Alle 300ms ein neues Element erzeugen
+        setInterval(createItem, 300);
+
+
+        // --- QUIZ LOGIK ---
         function checkAnswers() {
             const a1 = document.getElementById('q1').value.trim();
             const a2 = document.getElementById('q2').value.trim().toLowerCase();
             const a3 = document.getElementById('q3').value.trim().toLowerCase();
 
-            // Deine Lösungen
             if (a1 === "11.11.2023" && a2 === "schweiz" && a3 === "ja") {
                 window.location.href = "video.html";
             } else {
