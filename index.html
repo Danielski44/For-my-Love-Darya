@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Für Dich ❤️</title>
+    <title>Speziallieferung! 🚚</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         body { margin: 0; overflow: hidden; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #87CEEB; }
@@ -25,14 +25,11 @@
         .sun { position: absolute; top: 30px; right: 30px; width: 80px; height: 80px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 40px #FFD700; }
         .cloud { position: absolute; background: rgba(255,255,255,0.8); border-radius: 50px; animation: cloudMove 60s linear infinite; }
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
-        
-        /* STRASSE MIT LEITLINIEN */
         .road { 
             position: absolute; bottom: 15%; width: 100%; height: 80px; background: #555; 
             border-top: 3px solid #fff; border-bottom: 3px solid #fff;
             display: flex; align-items: center; justify-content: center;
         }
-        /* Die weißen Streifen in der Mitte */
         .road::after {
             content: ""; width: 100%; height: 4px;
             background: repeating-linear-gradient(to right, white 0, white 40px, transparent 40px, transparent 80px);
@@ -64,18 +61,17 @@
             background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
         }
 
-        /* Der Umschlag Container */
         .envelope-wrapper {
             position: relative; width: 320px; height: 220px; cursor: pointer;
             transition: transform 0.3s; margin-top: 80px;
         }
         .envelope-wrapper:hover { transform: scale(1.05); }
 
-        /* Umschlag vorne (Tasche) */
+        /* Umschlag Tasche (Vorne) */
         .envelope-front {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
             z-index: 20; border-radius: 0 0 10px 10px; pointer-events: none;
-            /* Dreiecks-Optik mit CSS Border Trick */
+            /* Dreiecks-Optik */
             border-bottom: 110px solid #f7f7f7;
             border-left: 160px solid #ececec;
             border-right: 160px solid #ececec;
@@ -91,7 +87,7 @@
             border-right: 160px solid transparent;
             border-top: 120px solid #e0e0e0;
             transform-origin: top; transition: transform 0.6s ease-in-out, z-index 0.6s;
-            z-index: 21; /* Startet ganz oben */
+            z-index: 21;
         }
 
         /* Hintergrund des Umschlags (innen) */
@@ -100,12 +96,12 @@
             background: #fff; border-radius: 5px; z-index: 1;
         }
 
-        /* Das Herz - EXAKT MITTIG */
+        /* Das Herz - PERFEKT ZENTRIERT */
         .heart-seal {
             position: absolute; 
             top: 50%; left: 50%; 
-            transform: translate(-50%, -50%);
-            font-size: 60px; color: red; z-index: 22;
+            transform: translate(-50%, -100%); /* Zieht es exakt auf die Spitze der Lasche */
+            font-size: 60px; color: red; z-index: 30;
             transition: opacity 0.3s; animation: pulseBtn 1.5s infinite;
             text-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
@@ -126,18 +122,16 @@
             margin-bottom: 15px; opacity: 0; transition: opacity 0.5s 1s; 
         }
 
-        .btn-group { display: flex; gap: 15px; opacity: 0; transition: opacity 0.5s 1s; }
+        .btn-group { display: flex; gap: 15px; justify-content: center; opacity: 0; transition: opacity 0.5s 1s; }
         .btn { padding: 8px 30px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; pointer-events: auto; }
-        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; }
-        .yes:hover { transform: scale(1.1); }
+        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 5px 10px rgba(255,77,109,0.3); }
+        .yes:hover { transform: scale(1.1); background: #ff2a55; }
         .no { background: #eee; color: #555; }
 
         /* Animation Klassen */
-        .open .envelope-flap { transform: rotateX(180deg); z-index: 0; } /* Klappt nach hinten */
+        .open .envelope-flap { transform: rotateX(180deg); z-index: 0; }
         .open .heart-seal { opacity: 0; }
-        
-        /* Karte fährt hoch und kriegt HÖCHSTEN Z-Index -> Buttons klickbar! */
-        .open .letter-card { transform: translateY(-150px); z-index: 100; } 
+        .open .letter-card { transform: translateY(-150px); z-index: 100; }
         .open .letter-text, .open .btn-group { opacity: 1; }
 
         @keyframes legWalk { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
@@ -180,10 +174,10 @@
                     <button class="btn no" onclick="event.stopPropagation(); closeEnvelopeAnim()">Nein</button>
                 </div>
             </div>
-            <div class="envelope-pocket"></div>
+            <div class="envelope-front"></div>
             <div class="envelope-flap"></div>
             <div class="heart-seal">❤️</div>
-            <p id="hint" style="position: absolute; bottom: -40px; width: 100%; text-align: center; color: white; font-weight: bold;">(Klicke auf das Herz)</p>
+            <p id="hint" style="position: absolute; bottom: -40px; width: 100%; text-align: center; color: white; font-weight: bold;">(Klicke auf den Brief)</p>
         </div>
     </div>
 
@@ -212,7 +206,6 @@
         function driveTruck(duration) {
             const truck = document.getElementById('truck');
             truck.style.transition = `left ${duration}s linear`;
-            // Fährt jetzt bis fast zur Mitte (40%)
             setTimeout(() => { truck.style.left = "35%"; }, 50);
         }
 
