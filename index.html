@@ -28,7 +28,8 @@
         .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
 
         /* LKW & Postbote */
-        .truck { font-size: 150px; position: absolute; bottom: 18%; left: -400px; z-index: 2; transition: left 0s linear; }
+        .truck { font-size: 150px; position: absolute; bottom: 18%; left: -400px; z-index: 2; transition-timing-function: linear; }
+        
         .postman-wrapper { position: absolute; bottom: 18%; left: 10%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
         .pm-part { position: absolute; font-size: 80px; text-align: center; width: 100%; }
         .pm-head-container { top: 0; height: 60px; z-index: 10; transition: transform 0.5s; }
@@ -42,85 +43,77 @@
         .bubble { position: absolute; top: -80px; left: -80px; width: 280px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-weight: bold; opacity: 0; transition: opacity 0.5s; text-align: center; z-index: 20; }
         .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* --- DER NEUE BRIEF (Weißer Umschlag, schöne Animation) --- */
+        /* --- INTERAKTIVER BRIEF --- */
         #letter-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
         }
 
-        /* Container für den Umschlag */
         .envelope-container {
-            position: relative; width: 350px; height: 250px;
+            position: relative; width: 320px; height: 220px;
             cursor: pointer; transition: transform 0.3s;
         }
-        .envelope-container:hover { transform: scale(1.02); }
+        .envelope-container:hover { transform: scale(1.05); }
 
-        /* Der Umschlag selbst (Weiß) */
+        /* Umschlag Körper (Tasche) */
         .envelope-body {
-            position: absolute; bottom: 0; width: 100%; height: 100%;
-            background: #ffffff; /* WEISS */
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            z-index: 10;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff; border-radius: 0 0 10px 10px;
+            z-index: 10; /* Vor dem Papier */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        /* Die unteren Dreiecke (für den Umschlag-Look) */
+        /* Dreieck-Optik unten */
         .envelope-body::after {
             content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top right, #f2f2f2 50%, transparent 50%) bottom left no-repeat,
-                        linear-gradient(to top left, #f2f2f2 50%, transparent 50%) bottom right no-repeat;
-            background-size: 50% 100%; border-radius: 0 0 10px 10px; pointer-events: none;
+            background: linear-gradient(to top right, #f0f0f0 50%, transparent 50%) bottom left no-repeat,
+                        linear-gradient(to top left, #f0f0f0 50%, transparent 50%) bottom right no-repeat;
+            background-size: 50% 100%; pointer-events: none; border-radius: 0 0 10px 10px;
         }
 
-        /* Die Lasche oben (Klappt auf) */
+        /* Die Lasche (Klappt auf) */
         .envelope-flap {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #e6e6e6; /* Etwas dunkleres Weiß für Kontrast */
+            background: #e6e6e6; 
             clip-path: polygon(0 0, 100% 0, 50% 55%);
             transform-origin: top; transition: transform 0.6s ease-in-out, z-index 0.6s;
-            z-index: 11;
+            z-index: 11; /* Ganz oben wenn zu */
         }
 
-        /* Das rote Herz (Verschluss) */
-        .envelope-heart {
+        /* Herz Siegel */
+        .heart-seal {
             position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
             font-size: 50px; z-index: 12; transition: opacity 0.3s; animation: pulseBtn 1.5s infinite;
         }
 
-        /* Das Papier innen (Großer Text) */
+        /* Das Papier innen */
         .letter-paper {
-            position: absolute; bottom: 10px; left: 5%; width: 90%; height: 90%;
+            position: absolute; bottom: 5px; left: 5%; width: 90%; height: 90%;
             background: #fff; padding: 20px; box-sizing: border-box;
             text-align: center; border-radius: 5px;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.8s 0.4s ease-out; /* Verzögert, bis Lasche offen ist */
-            z-index: 1; /* Startet IM Umschlag */
+            transition: transform 0.8s 0.4s ease-out; /* Verzögerung beim Rausfahren */
+            z-index: 1; /* HINTER der Tasche starten */
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
-        /* Text im Brief */
-        .letter-content { opacity: 0; transition: opacity 0.5s 1s; }
-        .letter-text {
-            font-family: 'Dancing Script', cursive; color: #ff4d6d;
-            font-size: 2rem; /* SEHR GROSSER TEXT */
-            line-height: 1.2; margin-bottom: 20px;
-        }
+        /* Inhalt (Text) */
+        .letter-content { opacity: 0; transition: opacity 0.5s 1.2s; } /* Text kommt ganz am Schluss */
+        .letter-text { font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.8rem; margin-bottom: 20px; }
 
         /* Buttons */
-        .btn { padding: 12px 40px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; }
-        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 5px 15px rgba(255,77,109,0.3); }
+        .btn { padding: 10px 30px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem; }
+        .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; }
         .yes:hover { transform: scale(1.1); }
         .no { background: #eee; color: #555; }
 
-        /* Animation Klassen beim Öffnen */
-        .open .envelope-flap { transform: rotateX(180deg); z-index: 0; }
-        .open .envelope-heart { opacity: 0; }
-        .open .letter-paper { transform: translateY(-120px); z-index: 5; } /* Fährt hoch */
-        .open .letter-content { opacity: 1; }
+        /* OPEN CLASSES */
+        .open .envelope-flap { transform: rotateX(180deg); z-index: 0; } /* Klappt nach hinten */
+        .open .heart-seal { opacity: 0; }
+        .open .letter-paper { transform: translateY(-130px); z-index: 5; box-shadow: 0 5px 15px rgba(0,0,0,0.1); } /* Fährt hoch */
+        .open .letter-content { opacity: 1; } /* Text erscheint */
 
         @keyframes legWalk { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
         @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         @keyframes cloudMove { from { left: -20%; } to { left: 120%; } }
-
     </style>
 </head>
 <body>
@@ -145,13 +138,13 @@
             <div class="pm-part pm-head-container"><span class="pm-head">👨‍✈️</span></div>
             <div class="pm-part pm-body">👕</div>
             <div class="pm-part pm-arm-left">💐🌷</div>
-            <div class="pm-part pm-arm-right" onclick="openLetter()">💌</div>
+            <div class="pm-part pm-arm-right" onclick="showEnvelopeOverlay()">💌</div>
             <div class="pm-part pm-legs">👖</div>
         </div>
     </div>
 
     <div id="letter-overlay">
-        <div class="envelope-container" id="myEnvelope" onclick="animateEnvelope()">
+        <div class="envelope-container" id="myEnvelope" onclick="openEnvelopeAnimation()">
             <div class="envelope-flap"></div>
             <div class="envelope-body"></div>
             <div class="envelope-heart">❤️</div>
@@ -161,11 +154,12 @@
                     <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
                     <div style="display:flex; gap:10px;">
                         <a href="game.html" class="btn yes">JA ❤️</a>
-                        <button class="btn no" onclick="event.stopPropagation(); closeEnvelope()">Nein</button>
+                        <button class="btn no" onclick="event.stopPropagation(); closeEnvelopeAnimation()">Nein</button>
                     </div>
                 </div>
             </div>
-            <p style="position: absolute; bottom: -40px; width: 100%; text-align: center; color: white; font-weight: bold;">(Klicke auf den Umschlag)</p>
+            
+            <p id="hint-text" style="position: absolute; bottom: -50px; width: 100%; text-align: center; color: white; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">(Klicke, um den Brief zu öffnen)</p>
         </div>
     </div>
 
@@ -177,41 +171,41 @@
             const audio = document.getElementById('truckSound');
             const truck = document.getElementById('truck');
 
-            // 1. Audio starten
-            let playPromise = audio.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    // Audio läuft
-                    let duration = audio.duration;
-                    if(!duration || isNaN(duration) || duration === Infinity) duration = 8;
-                    
-                    animateTruck(duration);
+            // 1. Audio abspielen
+            audio.play();
 
-                    // WARTE AUF ENDE DER MUSIK
-                    audio.onended = function() {
-                        spawnPostman();
-                    };
-                }).catch(e => {
-                    // Notfall ohne Audio
-                    animateTruck(8);
-                    setTimeout(spawnPostman, 8000);
-                });
+            // 2. Warten, bis Metadaten (Länge) da sind, dann fahren
+            if (audio.readyState > 0) {
+                runTruck(audio.duration);
             } else {
-                animateTruck(8);
-                setTimeout(spawnPostman, 8000);
+                audio.onloadedmetadata = function() {
+                    runTruck(audio.duration);
+                };
             }
+
+            // Fallback, falls Audio spinnt: 10 Sekunden
+            setTimeout(() => {
+                if(!audio.duration) runTruck(10);
+            }, 500);
+
+            // 3. Wenn Musik zu Ende -> Postbote
+            audio.onended = function() {
+                spawnPostman();
+            };
         }
 
-        function animateTruck(duration) {
+        function runTruck(duration) {
             const truck = document.getElementById('truck');
+            // Transition Dauer = Audio Dauer
             truck.style.transition = `left ${duration}s linear`;
-            setTimeout(() => { truck.style.left = "10%"; }, 100);
+            // Trigger Bewegung
+            setTimeout(() => { truck.style.left = "10%"; }, 50);
         }
 
         function spawnPostman() {
             const postman = document.getElementById('postman');
             postman.style.opacity = "1";
+            
             setTimeout(() => {
                 postman.classList.add('walking');
                 postman.style.transition = "left 3s linear";
@@ -225,16 +219,20 @@
             }, 3500);
         }
 
-        function openLetter() {
+        // Zeigt nur das Overlay mit dem GESCHLOSSENEN Brief
+        function showEnvelopeOverlay() {
             document.getElementById('letter-overlay').style.display = 'flex';
         }
 
-        function animateEnvelope() {
+        // Führt die Öffnen-Animation aus
+        function openEnvelopeAnimation() {
             document.getElementById('myEnvelope').classList.add('open');
+            document.getElementById('hint-text').style.display = 'none'; // Hinweis ausblenden
         }
         
-        function closeEnvelope() {
+        function closeEnvelopeAnimation() {
             document.getElementById('myEnvelope').classList.remove('open');
+            document.getElementById('hint-text').style.display = 'block';
             setTimeout(() => { document.getElementById('letter-overlay').style.display = 'none'; }, 500);
         }
     </script>
