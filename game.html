@@ -6,77 +6,49 @@
     <title>Sammle Momente</title>
     <style>
         body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: sans-serif; text-align: center; touch-action: none; }
-        h2 { color: #ff4d6d; position: relative; z-index: 100; margin-top: 20px; }
+        h2 { color: #ff4d6d; padding-top: 20px; position: relative; z-index: 100; pointer-events: none; }
         .moment {
             position: absolute; width: 180px; height: 180px; object-fit: cover; 
-            border-radius: 20px; border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            cursor: grab; transition: opacity 0.4s;
+            border-radius: 20px; border: 6px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            cursor: pointer; transition: opacity 0.4s, transform 0.2s;
         }
-        /* Extrem langsame Gleit-Animationen */
-        .slow1 { animation: glide1 50s infinite linear alternate; }
-        .slow2 { animation: glide2 60s infinite linear alternate; }
-        .slow3 { animation: glide3 45s infinite linear alternate; }
+        
+        /* EXTREM LANGSAME BEWEGUNG (120 Sekunden!) */
+        .crawl { animation: crawlAnim 120s infinite linear alternate; }
+        @keyframes crawlAnim {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(30vw, 20vh); }
+            100% { transform: translate(-10vw, 40vh); }
+        }
 
-        @keyframes glide1 { 0% { top: 10%; left: 10%; } 100% { top: 70%; left: 70%; } }
-        @keyframes glide2 { 0% { top: 60%; left: 5%; } 100% { top: 10%; left: 75%; } }
-        @keyframes glide3 { 0% { top: 40%; left: 80%; } 100% { top: 80%; left: 10%; } }
-
-        .dragging { z-index: 1000 !important; animation: none !important; cursor: grabbing; }
         .found { opacity: 0; transform: scale(0) !important; pointer-events: none; }
-        #next-btn { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff4d6d; color: white; padding: 25px 50px; border-radius: 60px; text-decoration: none; font-size: 2rem; z-index: 2000; }
+        #next-btn { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff4d6d; color: white; padding: 25px 60px; border-radius: 60px; text-decoration: none; font-size: 2rem; z-index: 2000; box-shadow: 0 15px 30px rgba(255, 77, 109, 0.4); }
     </style>
 </head>
 <body>
-    <h2>Fange alle 10 Momente! (<span id="count">0</span>/10)</h2>
-    <div id="game">
-        <img src="1.jpeg" class="moment slow1" style="top:10%; left:10%;" onpointerdown="startDrag(event)">
-        <img src="2.jpeg" class="moment slow2" style="top:20%; left:60%;" onpointerdown="startDrag(event)">
-        <img src="3.jpeg" class="moment slow3" style="top:50%; left:15%;" onpointerdown="startDrag(event)">
-        <img src="4.jpeg" class="moment slow1" style="top:70%; left:65%;" onpointerdown="startDrag(event)">
-        <img src="5.jpeg" class="moment slow2" style="top:40%; left:40%;" onpointerdown="startDrag(event)">
-        <img src="6.jpeg" class="moment slow3" style="top:5%; left:45%;" onpointerdown="startDrag(event)">
-        <img src="7.jpeg" class="moment slow1" style="top:60%; left:85%;" onpointerdown="startDrag(event)">
-        <img src="8.jpeg" class="moment slow2" style="top:80%; left:25%;" onpointerdown="startDrag(event)">
-        <img src="9.jpeg" class="moment slow3" style="top:5%; left:80%;" onpointerdown="startDrag(event)">
-        <img src="10.jpeg" class="moment slow1" style="top:35%; left:75%;" onpointerdown="startDrag(event)">
+    <h2>Sammle alle 10 Momente! (<span id="count">0</span>/10)</h2>
+    <div id="game-area">
+        <img src="1.jpeg" class="moment crawl" style="top:10%; left:10%;" onclick="hit(this)">
+        <img src="2.jpeg" class="moment crawl" style="top:25%; left:60%; animation-delay: -10s;" onclick="hit(this)">
+        <img src="3.jpeg" class="moment crawl" style="top:50%; left:15%; animation-delay: -20s;" onclick="hit(this)">
+        <img src="4.jpeg" class="moment crawl" style="top:70%; left:65%; animation-delay: -30s;" onclick="hit(this)">
+        <img src="5.jpeg" class="moment crawl" style="top:40%; left:35%; animation-delay: -40s;" onclick="hit(this)">
+        <img src="6.jpeg" class="moment crawl" style="top:5%; left:40%; animation-delay: -50s;" onclick="hit(this)">
+        <img src="7.jpeg" class="moment crawl" style="top:65%; left:80%; animation-delay: -60s;" onclick="hit(this)">
+        <img src="8.jpeg" class="moment crawl" style="top:85%; left:25%; animation-delay: -70s;" onclick="hit(this)">
+        <img src="9.jpeg" class="moment crawl" style="top:10%; left:85%; animation-delay: -80s;" onclick="hit(this)">
+        <img src="10.jpeg" class="moment crawl" style="top:45%; left:75%; animation-delay: -90s;" onclick="hit(this)">
     </div>
     <a href="video.html" id="next-btn">Weiter ❤️</a>
 
     <script>
-        let count = 0;
-        let activeElement = null;
-        let startPos = { x: 0, y: 0 };
-        let startTime = 0;
-
-        function startDrag(e) {
-            activeElement = e.target;
-            activeElement.classList.add('dragging');
-            startTime = Date.now();
-            const rect = activeElement.getBoundingClientRect();
-            startPos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-            activeElement.setPointerCapture(e.pointerId);
-            activeElement.onpointermove = (ev) => {
-                if (!activeElement) return;
-                activeElement.style.left = (ev.clientX - startPos.x) + 'px';
-                activeElement.style.top = (ev.clientY - startPos.y) + 'px';
-                activeElement.style.margin = "0";
-            };
-            activeElement.onpointerup = (ev) => {
-                const duration = Date.now() - startTime;
-                activeElement.releasePointerCapture(ev.pointerId);
-                activeElement.classList.remove('dragging');
-                if (duration < 250) collect(activeElement);
-                activeElement.onpointermove = null;
-                activeElement = null;
-            };
-        }
-
-        function collect(el) {
-            if (!el.classList.contains('found')) {
-                el.classList.add('found');
-                count++;
-                document.getElementById('count').innerText = count;
-                if (count === 10) document.getElementById('next-btn').style.display = 'block';
+        let c = 0;
+        function hit(e) {
+            if(!e.classList.contains('found')) {
+                e.classList.add('found');
+                c++;
+                document.getElementById('count').innerText = c;
+                if(c === 10) document.getElementById('next-btn').style.display = 'block';
             }
         }
     </script>
