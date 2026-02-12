@@ -25,14 +25,25 @@
         .sun { position: absolute; top: 30px; right: 30px; width: 80px; height: 80px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 40px #FFD700; }
         .cloud { position: absolute; background: rgba(255,255,255,0.8); border-radius: 50px; animation: cloudMove 60s linear infinite; }
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
-        .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
+        
+        /* --- STRASSE MIT WEISSEN STREIFEN (Repariert) --- */
+        .road { 
+            position: absolute; bottom: 15%; width: 100%; height: 80px; background: #555; 
+            border-top: 3px solid #fff; border-bottom: 3px solid #fff;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .road::after {
+            content: ""; width: 100%; height: 4px;
+            background: repeating-linear-gradient(to right, white 0, white 40px, transparent 40px, transparent 80px);
+        }
 
-        /* LKW & Postbote */
+        /* LKW */
         .truck { 
             font-size: 180px; position: absolute; bottom: 18%; left: -400px; z-index: 2; 
             transition-timing-function: linear; 
         }
         
+        /* Postbote */
         .postman-wrapper { position: absolute; bottom: 15%; left: 40%; height: 200px; width: 120px; z-index: 3; opacity: 0; }
         .pm-part { position: absolute; font-size: 90px; text-align: center; width: 100%; }
         .pm-head-container { top: 0; height: 60px; z-index: 10; transition: transform 0.5s; }
@@ -46,79 +57,54 @@
         .bubble { position: absolute; top: -100px; left: -90px; width: 300px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-weight: bold; opacity: 0; transition: opacity 0.5s; text-align: center; z-index: 20; }
         .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* --- DER BRIEF (KORRIGIERT) --- */
+        /* --- GANZ NORMALER BRIEF (Simpel & Stabil) --- */
         #letter-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center; flex-direction: column;
         }
 
-        .envelope-wrapper {
-            position: relative; width: 300px; height: 200px; cursor: pointer;
-            margin-top: 50px;
+        /* ZUSTAND 1: Einfacher geschlossener weißer Umschlag */
+        .simple-envelope {
+            width: 300px; height: 200px; background: #ffffff;
+            border: 2px solid #e0e0e0; border-radius: 5px;
+            position: relative; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            display: flex; justify-content: center; align-items: center;
         }
-        .envelope-wrapper:hover { transform: scale(1.02); transition: 0.3s; }
-
-        /* Innenseite (Hintergrund) */
-        .envelope-back {
+        .simple-envelope:hover { transform: scale(1.05); }
+        /* Angedeutete Lasche */
+        .envelope-v {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #f7f7f7; border-radius: 5px; z-index: 1;
+            pointer-events: none;
+            border-top: 100px solid #f7f7f7; /* Leicht dunkleres Weiß */
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
         }
 
-        /* Die Karte/Blatt (Inhalt) */
-        .letter-card {
-            position: absolute; bottom: 0; left: 10px; width: 280px; height: 180px;
-            background: #fff; border: 1px solid #ddd;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;
-            padding: 10px; box-sizing: border-box;
-            transition: transform 0.6s 0.4s ease-in-out; /* Animation rausfahren */
-            z-index: 5; /* Startet im Umschlag */
+        /* ZUSTAND 2: Einfaches geöffnetes weißes Papier */
+        .simple-paper {
+            display: none; /* Erst versteckt */
+            width: 320px; background: #fff; padding: 30px;
+            border-radius: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center; animation: fadeIn 0.5s;
         }
 
         .letter-text { 
-            font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.4rem; 
-            margin-bottom: 15px; opacity: 0; transition: opacity 0.3s 0.8s; 
+            font-family: 'Dancing Script', cursive; color: #ff4d6d; font-size: 1.8rem; 
+            margin-bottom: 25px; line-height: 1.3;
         }
-
-        .btn-group { display: flex; gap: 10px; justify-content: center; opacity: 0; transition: opacity 0.3s 0.8s; }
-        .btn { padding: 8px 25px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; pointer-events: auto; }
+        .btn-group { display: flex; gap: 15px; justify-content: center; }
+        .btn { padding: 10px 30px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
         .yes { background: #ff4d6d; color: white; text-decoration: none; display: inline-block; transition: 0.3s; }
         .yes:hover { transform: scale(1.1); }
         .no { background: #eee; color: #555; }
-
-        /* Umschlag Tasche (Vorne) - Weiß */
-        .envelope-front {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; border-radius: 0 0 10px 10px; pointer-events: none;
-            /* Dreiecke mit CSS */
-            border-bottom: 100px solid #ffffff;
-            border-left: 150px solid #f2f2f2;
-            border-right: 150px solid #f2f2f2;
-            border-top: 100px solid transparent;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        /* Die Lasche oben - Weiß */
-        .envelope-flap {
-            position: absolute; top: 0; left: 0; width: 0; height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 110px solid #e6e6e6; /* Leicht dunkler für Kontrast */
-            transform-origin: top; transition: transform 0.4s ease-in-out, z-index 0.4s;
-            z-index: 20; /* Startet oben */
-        }
-
-        /* KEIN HERZ MEHR HIER */
-
-        /* Animation Klassen */
-        .open .envelope-flap { transform: rotateX(180deg); z-index: 0; }
-        
-        /* Karte fährt ein Stück raus und kommt vor die Tasche */
-        .open .letter-card { transform: translateY(-120px); z-index: 30; box-shadow: 0 5px 15px rgba(0,0,0,0.1); } 
-        .open .letter-text, .open .btn-group { opacity: 1; }
+        #hint { color: white; margin-top: 20px; font-weight: bold; }
 
         @keyframes legWalk { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
         @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         @keyframes cloudMove { from { left: -20%; } to { left: 120%; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -132,7 +118,6 @@
     <div id="scene">
         <div class="sun"></div>
         <div class="cloud" style="top: 15%; width: 100px; height: 40px;"></div>
-        <div class="cloud" style="top: 25%; width: 140px; height: 50px; left: 60%; animation-delay: -20s;"></div>
         <div class="grass"></div>
         <div class="road"></div>
         <div class="truck" id="truck">🚚</div>
@@ -148,23 +133,17 @@
     </div>
 
     <div id="letter-overlay">
-        <div class="envelope-wrapper" id="myEnvelope" onclick="openEnvelopeAnim()">
-            <div class="envelope-back"></div>
-            
-            <div class="letter-card">
-                <div class="letter-content">
-                    <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
-                    <div class="btn-group">
-                        <a href="game.html" class="btn yes">JA ❤️</a>
-                        <button class="btn no" onclick="event.stopPropagation(); closeEnvelopeAnim()">Nein</button>
-                    </div>
-                </div>
+        <div class="simple-envelope" id="closedBox" onclick="openSimpleLetter()">
+            <div class="envelope-v"></div>
+        </div>
+        <p id="hint">(Klicke auf den Brief)</p>
+
+        <div class="simple-paper" id="openedPaper">
+            <div class="letter-text">Hallo meine Dosienka,<br>Möchtest du mein Valentine sein?</div>
+            <div class="btn-group">
+                <a href="game.html" class="btn yes">JA ❤️</a>
+                <button class="btn no" onclick="closeSimpleLetter()">Nein</button>
             </div>
-            
-            <div class="envelope-front"></div>
-            <div class="envelope-flap"></div>
-            
-            <p id="hint" style="position: absolute; bottom: -40px; width: 100%; text-align: center; color: white; font-weight: bold;">(Klicke auf den Brief)</p>
         </div>
     </div>
 
@@ -213,17 +192,25 @@
 
         function showEnvelope() {
             document.getElementById('letter-overlay').style.display = 'flex';
+            // Sicherstellen, dass der geschlossene Zustand am Anfang da ist
+            document.getElementById('closedBox').style.display = 'flex';
+            document.getElementById('hint').style.display = 'block';
+            document.getElementById('openedPaper').style.display = 'none';
         }
 
-        function openEnvelopeAnim() {
-            document.getElementById('myEnvelope').classList.add('open');
+        // Ganz simple Funktion: Umschlag weg, Papier her
+        function openSimpleLetter() {
+            document.getElementById('closedBox').style.display = 'none';
             document.getElementById('hint').style.display = 'none';
+            document.getElementById('openedPaper').style.display = 'block';
         }
         
-        function closeEnvelopeAnim() {
-            document.getElementById('myEnvelope').classList.remove('open');
+        // Andersherum
+        function closeSimpleLetter() {
+            document.getElementById('openedPaper').style.display = 'none';
+            document.getElementById('closedBox').style.display = 'flex';
             document.getElementById('hint').style.display = 'block';
-            setTimeout(() => { document.getElementById('letter-overlay').style.display = 'none'; }, 500);
+            setTimeout(() => { document.getElementById('letter-overlay').style.display = 'none'; }, 100);
         }
     </script>
 </body>
