@@ -20,50 +20,78 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: pulse 2s infinite;
         }
 
-        /* Landschaft */
-        #scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
-        .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
-        .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
-
-        /* Der LKW */
-        .truck {
-            font-size: 150px; position: absolute; bottom: 18%; left: -400px; z-index: 2;
-            transition: left 3s cubic-bezier(0.25, 1, 0.5, 1);
+        /* --- LANDSCHAFT (Berge & Tal) --- */
+        #scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; overflow: hidden; }
+        .sky { position: absolute; top:0; width: 100%; height: 60%; background: linear-gradient(to bottom, #87CEEB, #E0F7FA); }
+        .mountains {
+            position: absolute; bottom: 30%; width: 100%; height: 40%;
+            background: linear-gradient(to bottom, #7a8c99 20%, #a3b5c1 100%);
+            clip-path: polygon(0% 100%, 15% 40%, 35% 80%, 55% 20%, 80% 60%, 100% 30%, 100% 100%);
+            z-index: 1;
         }
-
-        /* --- DER NEUE POSTBOTE (Aufgebaut aus Teilen) --- */
-        .postman-wrapper {
-            position: absolute; bottom: 20%; left: -200px; /* Startet draußen */
-            height: 200px; width: 120px; z-index: 3;
-            transition: left 4s linear; /* Gleichmäßiges Laufen */
-            opacity: 0;
-        }
+        .valley { position: absolute; bottom: 0; width: 100%; height: 40%; background: #90EE90; z-index: 2; border-top: 5px solid #76c976; }
         
-        /* Teile des Postboten */
-        .pm-part { position: absolute; font-size: 80px; text-align: center; width: 100%; }
-        /* Der Kopf (drehbar!) */
-        .pm-head-container {
-            top: 0; height: 60px; z-index: 10;
-            transform-style: preserve-3d; transition: transform 0.8s ease-in-out;
+        /* Die Straße (Perspektivisch) */
+        .road-container {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 100%; perspective: 1000px; z-index: 3; pointer-events: none;
         }
+        .road {
+            position: absolute; bottom: 0; width: 100%; height: 100%; background: #555;
+            transform: rotateX(60deg); /* Macht die Straße flach */
+            transform-origin: bottom;
+            border-left: 10px solid #fff; border-right: 10px solid #fff;
+        }
+        .line { position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: repeating-linear-gradient(0deg, #fff, #fff 40px, transparent 40px, transparent 80px); animation: moveRoad 1s linear infinite; }
+
+
+        /* --- LKW & ANIMATION --- */
+        /* Container für die lange Fahrt */
+        .truck-drive-container {
+            position: absolute; 
+            /* Startpunkt: Oben links, klein */
+            top: 30%; left: -10%; transform: scale(0.2);
+            z-index: 4;
+            opacity: 0; /* Erst unsichtbar */
+        }
+
+        /* Die eigentliche Fahrt-Animation (8 Sekunden) */
+        .driving {
+            opacity: 1;
+            animation: longDrive 8s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+        }
+
+        @keyframes longDrive {
+            0% { top: 35%; left: -10%; transform: scale(0.2); }
+            40% { top: 38%; left: 30%; transform: scale(0.4); } /* Kurve */
+            100% { top: 55%; left: 15%; transform: scale(1); } /* Endposition */
+        }
+
+        .truck { font-size: 150px; }
+
+        /* --- POSTBOTE (Wie vorher, startet später) --- */
+        .postman-wrapper {
+            position: absolute; bottom: 25%; left: 25%; /* Position beim gestoppten Truck */
+            height: 200px; width: 120px; z-index: 5; opacity: 0;
+        }
+        .pm-part { position: absolute; font-size: 80px; text-align: center; width: 100%; }
+        .pm-head-container { top: 0; height: 60px; z-index: 10; transform-style: preserve-3d; transition: transform 0.8s ease-in-out; }
         .pm-head { display: block; }
-        /* Körper */
-        .pm-body { top: 45px; z-index: 5; color: #0056b3; /* Blaue Uniform */ }
-        /* Arme mit Gegenständen */
+        .pm-body { top: 45px; z-index: 5; color: #0056b3; }
         .pm-arm-left { top: 60px; left: -40px; z-index: 6; font-size: 60px; }
         .pm-arm-right { top: 60px; left: 40px; z-index: 6; font-size: 60px; cursor: pointer; transition: 0.3s; }
         .pm-arm-right:hover { transform: scale(1.2); }
-        /* Beine (für Laufanimation) */
         .pm-legs { top: 110px; z-index: 4; }
 
         /* Animationen & Zustände */
-        .walking .pm-head-container { transform: rotateY(30deg); /* Schaut leicht nach rechts beim Gehen */ }
+        .walking-to-center { transition: left 3s linear; left: 50% !important; transform: translateX(-50%); }
+        .walking .pm-head-container { transform: rotateY(30deg); }
         .walking .pm-legs { animation: legWalk 0.5s infinite alternate ease-in-out; }
-        
-        .stopped .pm-head-container { transform: rotateY(0deg); /* Schaut geradeaus (zu dir) */ }
+        .stopped .pm-head-container { transform: rotateY(0deg); }
 
         @keyframes legWalk { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes moveRoad { from { background-position: 0 0; } to { background-position: 0 80px; } }
 
         /* Sprechblase */
         .bubble {
@@ -74,7 +102,7 @@
         }
         .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* Brief Overlay (wie vorher) */
+        /* Brief Overlay */
         #letter-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
         .envelope-card { background: #ff4d6d; padding: 5px; border-radius: 10px; width: 320px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.5s; }
         .card-content { background: white; width: 90%; height: 90%; border-radius: 5px; text-align: center; display: flex; flex-direction: column; justify-content: center; opacity: 0; transition: 0.5s; padding: 10px; }
@@ -85,7 +113,7 @@
     </style>
 </head>
 <body>
-    <audio id="truckSound"><source src="lkw.mp3" type="audio/mpeg"></audio>
+    <audio id="truckSound" loop><source src="lkw.mp3" type="audio/mpeg"></audio>
 
     <div id="start-screen">
         <h1>Für meine Dosienka ❤️</h1>
@@ -93,14 +121,23 @@
     </div>
 
     <div id="scene">
-        <div class="grass"></div>
-        <div class="road"></div>
-        <div class="truck" id="truck">🚚</div>
+        <div class="sky"></div>
+        <div class="mountains"></div>
+        <div class="valley"></div>
+        <div class="road-container"><div class="road"><div class="line"></div></div></div>
+
+        <div class="truck-drive-container" id="truckContainer">
+            <div class="truck">🚚</div>
+        </div>
 
         <div class="postman-wrapper" id="postman">
             <div class="bubble">Ich habe Post für dich und deine Lieblingsblumen!</div>
-            
-            <div class="pm-part pm-head-container"><span class="pm-head">👨‍✈️</span></div> <div class="pm-part pm-body">👕</div> <div class="pm-part pm-arm-left">💐🌷</div> <div class="pm-part pm-arm-right" onclick="showLetter()">💌</div> <div class="pm-part pm-legs">👖</div> </div>
+            <div class="pm-part pm-head-container"><span class="pm-head">👨‍✈️</span></div>
+            <div class="pm-part pm-body">👕</div>
+            <div class="pm-part pm-arm-left">💐🌷</div>
+            <div class="pm-part pm-arm-right" onclick="showLetter()">💌</div>
+            <div class="pm-part pm-legs">👖</div>
+        </div>
     </div>
 
     <div id="letter-overlay">
@@ -120,37 +157,36 @@
         function startShow() {
             document.getElementById('start-screen').style.display = 'none';
             document.getElementById('scene').style.display = 'block';
-            document.getElementById('truckSound').play().catch(e => console.log(e));
+            
+            const audio = document.getElementById('truckSound');
+            audio.play().catch(e => console.log(e));
 
-            const truck = document.getElementById('truck');
+            const truckCont = document.getElementById('truckContainer');
             const postman = document.getElementById('postman');
             
-            // 1. Truck fährt ein
-            setTimeout(() => { truck.style.left = "5%"; }, 100);
+            // 1. Start der langen Fahrt (8 Sekunden)
+            truckCont.classList.add('driving');
 
-            // 2. Postbote erscheint beim Truck und läuft los (nach 3s)
+            // 2. Nach 8 Sekunden: Sound stop, Postbote Action
             setTimeout(() => {
+                audio.pause(); // Sound stoppen
+                
+                // Postbote erscheint
                 postman.style.opacity = "1";
-                postman.style.left = "15%"; // Startposition beim Truck
                 
                 // Kurze Pause, dann loslaufen
                 setTimeout(() => {
-                    postman.classList.add('walking'); // Kopf dreht sich nach rechts, Beine bewegen sich
-                    postman.style.left = "50%"; // Läuft zur Mitte
-                    postman.style.transform = "translateX(-50%)";
+                    postman.classList.add('walking', 'walking-to-center');
                 }, 500);
-            }, 3000);
 
-            // 3. Ankunft in Mitte (nach 7.5s - Laufzeit + Wartezeit)
-            setTimeout(() => {
-                postman.classList.remove('walking'); // Hört auf zu laufen
-                postman.classList.add('stopped'); // Dreht Kopf nach vorne zu dir
-                
-                // Sprechblase kommt kurz danach
+                // Ankunft in Mitte (nach weiteren 3s Laufen)
                 setTimeout(() => {
-                    document.querySelector('.bubble').style.opacity = "1";
-                }, 800);
-            }, 7500);
+                    postman.classList.remove('walking');
+                    postman.classList.add('stopped');
+                    setTimeout(() => { document.querySelector('.bubble').style.opacity = "1"; }, 800);
+                }, 3500);
+
+            }, 8000); // WARTET 8 SEKUNDEN AUF DIE FAHRT
         }
 
         function showLetter() { document.getElementById('letter-overlay').style.display = 'flex'; }
