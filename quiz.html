@@ -6,19 +6,17 @@
     <title>Liebesquiz 🌸</title>
     <style>
         body {
-            /* Weicher, romantischer Hintergrund */
+            /* Weicher Verlauf */
             background: linear-gradient(to bottom, #ffe4e1, #ffb6c1);
             font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center;
             min-height: 100vh; margin: 0; overflow: hidden;
         }
 
-        /* Container für die fliegenden Elemente */
+        /* Fliegende Elemente */
         #garden-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 0;
         }
-
-        /* Die fliegenden Herzen/Blumen */
         .garden-item {
             position: absolute; bottom: -50px;
             animation: floatUp linear infinite;
@@ -28,7 +26,7 @@
             to { transform: translateY(-110vh) rotate(360deg); }
         }
 
-        /* Die Quiz Karte */
+        /* Karte */
         .quiz-card {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(5px);
@@ -85,7 +83,6 @@
     </div>
 
     <script>
-        // --- ANIMATION DES GARTENS ---
         const garden = document.getElementById('garden-container');
         const items = ['🌹', '🌷', '💐', '🌸', '🌺', '🌻', '❤️', '💖', '✨'];
 
@@ -95,16 +92,13 @@
             el.innerText = items[Math.floor(Math.random() * items.length)];
             el.style.left = Math.random() * 100 + 'vw';
             el.style.fontSize = Math.random() * 30 + 20 + 'px';
-            el.style.animationDuration = Math.random() * 6 + 4 + 's'; // Langsamer
+            el.style.animationDuration = Math.random() * 6 + 4 + 's';
             el.style.animationDelay = Math.random() * 2 + 's';
             garden.appendChild(el);
-            
-            // Aufräumen
             setTimeout(() => { el.remove(); }, 11000);
         }
-        setInterval(createItem, 300); // Regelmäßig neue Blumen
+        setInterval(createItem, 300);
 
-        // --- QUIZ LOGIK ---
         function checkAnswers() {
             const a1 = document.getElementById('q1').value.trim();
             const a2 = document.getElementById('q2').value.trim().toLowerCase();
