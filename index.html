@@ -8,7 +8,7 @@
     <style>
         body { margin: 0; overflow: hidden; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #87CEEB; }
 
-        /* Startscreen für Audio */
+        /* Startscreen */
         #start-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
@@ -21,12 +21,9 @@
         }
 
         /* Landschaft */
-        #scene {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none;
-        }
+        #scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
         .grass { position: absolute; bottom: 0; width: 100%; height: 35%; background: #90EE90; border-top: 5px solid #76c976; }
         .road { position: absolute; bottom: 15%; width: 100%; height: 60px; background: #555; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
-        .line { position: absolute; top: 50%; width: 100%; height: 2px; background: repeating-linear-gradient(90deg, #fff, #fff 20px, #555 20px, #555 40px); }
 
         /* Der LKW */
         .truck {
@@ -34,59 +31,55 @@
             transition: left 3s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* Der Postbote */
-        .postman-container {
-            position: absolute; bottom: 18%; left: 10%; /* Startet beim LKW */
-            height: 150px; display: flex; align-items: flex-end;
-            opacity: 0; z-index: 3;
-            /* Wir animieren ihn mit JS */
+        /* --- DER NEUE POSTBOTE (Aufgebaut aus Teilen) --- */
+        .postman-wrapper {
+            position: absolute; bottom: 20%; left: -200px; /* Startet draußen */
+            height: 200px; width: 120px; z-index: 3;
+            transition: left 4s linear; /* Gleichmäßiges Laufen */
+            opacity: 0;
         }
-        .postman-body { font-size: 120px; position: relative; z-index: 2; }
         
-        /* Die Gegenstände (Links & Rechts) */
-        .items {
-            position: absolute; bottom: 40px; width: 250px; left: -65px;
-            display: flex; justify-content: space-between; z-index: 3;
+        /* Teile des Postboten */
+        .pm-part { position: absolute; font-size: 80px; text-align: center; width: 100%; }
+        /* Der Kopf (drehbar!) */
+        .pm-head-container {
+            top: 0; height: 60px; z-index: 10;
+            transform-style: preserve-3d; transition: transform 0.8s ease-in-out;
         }
-        .flower-item { font-size: 80px; animation: sway 2s infinite ease-in-out; }
-        .letter-item { font-size: 70px; animation: sway 2s infinite ease-in-out reverse; cursor: pointer; transition: 0.3s; }
-        .letter-item:hover { transform: scale(1.2); }
+        .pm-head { display: block; }
+        /* Körper */
+        .pm-body { top: 45px; z-index: 5; color: #0056b3; /* Blaue Uniform */ }
+        /* Arme mit Gegenständen */
+        .pm-arm-left { top: 60px; left: -40px; z-index: 6; font-size: 60px; }
+        .pm-arm-right { top: 60px; left: 40px; z-index: 6; font-size: 60px; cursor: pointer; transition: 0.3s; }
+        .pm-arm-right:hover { transform: scale(1.2); }
+        /* Beine (für Laufanimation) */
+        .pm-legs { top: 110px; z-index: 4; }
 
-        /* Geh-Animation (Wackeln) */
-        .walking { animation: walkBob 0.3s infinite alternate; }
-        @keyframes walkBob { from { transform: translateY(0); } to { transform: translateY(-10px); } }
-        @keyframes sway { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
+        /* Animationen & Zustände */
+        .walking .pm-head-container { transform: rotateY(30deg); /* Schaut leicht nach rechts beim Gehen */ }
+        .walking .pm-legs { animation: legWalk 0.5s infinite alternate ease-in-out; }
+        
+        .stopped .pm-head-container { transform: rotateY(0deg); /* Schaut geradeaus (zu dir) */ }
+
+        @keyframes legWalk { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         /* Sprechblase */
         .bubble {
-            position: absolute; top: -100px; left: -50px; width: 280px;
+            position: absolute; top: -80px; left: -60px; width: 280px;
             background: white; padding: 15px; border-radius: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-weight: bold;
-            opacity: 0; transition: opacity 0.5s; text-align: center;
+            opacity: 0; transition: opacity 0.5s; text-align: center; z-index: 20;
         }
-        .bubble::after {
-            content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent;
-        }
+        .bubble::after { content: ""; position: absolute; bottom: -10px; left: 50%; border-width: 10px; border-style: solid; border-color: white transparent transparent transparent; }
 
-        /* Der Brief (Overlay) */
-        #letter-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center;
-        }
-        .envelope-card {
-            background: #ff4d6d; padding: 5px; border-radius: 10px; width: 320px; height: 220px;
-            position: relative; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: 0.5s;
-        }
-        .card-content {
-            background: white; width: 90%; height: 90%; border-radius: 5px;
-            text-align: center; display: flex; flex-direction: column; justify-content: center;
-            opacity: 0; transition: 0.5s; padding: 10px;
-        }
+        /* Brief Overlay (wie vorher) */
+        #letter-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
+        .envelope-card { background: #ff4d6d; padding: 5px; border-radius: 10px; width: 320px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.5s; }
+        .card-content { background: white; width: 90%; height: 90%; border-radius: 5px; text-align: center; display: flex; flex-direction: column; justify-content: center; opacity: 0; transition: 0.5s; padding: 10px; }
         .open .card-content { opacity: 1; }
         .open { transform: scale(1.2); height: 300px; background: white; border: 4px solid #ff4d6d; }
-        
         .btn { padding: 8px 20px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; margin: 5px; }
         .yes { background: #ff4d6d; color: white; text-decoration: none; }
     </style>
@@ -101,15 +94,13 @@
 
     <div id="scene">
         <div class="grass"></div>
-        <div class="road"><div class="line"></div></div>
-
+        <div class="road"></div>
         <div class="truck" id="truck">🚚</div>
 
-        <div class="postman-container" id="postman">
+        <div class="postman-wrapper" id="postman">
             <div class="bubble">Ich habe Post für dich und deine Lieblingsblumen!</div>
-            <div class="items">
-                <div class="flower-item">💐🌷</div> <div class="letter-item" onclick="showLetter()">💌</div> </div>
-            <div class="postman-body">🚶‍♂️</div> </div>
+            
+            <div class="pm-part pm-head-container"><span class="pm-head">👨‍✈️</span></div> <div class="pm-part pm-body">👕</div> <div class="pm-part pm-arm-left">💐🌷</div> <div class="pm-part pm-arm-right" onclick="showLetter()">💌</div> <div class="pm-part pm-legs">👖</div> </div>
     </div>
 
     <div id="letter-overlay">
@@ -134,38 +125,41 @@
             const truck = document.getElementById('truck');
             const postman = document.getElementById('postman');
             
-            // Truck fährt ein
-            setTimeout(() => { truck.style.left = "10%"; }, 100);
+            // 1. Truck fährt ein
+            setTimeout(() => { truck.style.left = "5%"; }, 100);
 
-            // Postbote steigt aus (nach 3.5s)
+            // 2. Postbote erscheint beim Truck und läuft los (nach 3s)
             setTimeout(() => {
                 postman.style.opacity = "1";
-                postman.style.transition = "left 3s linear"; 
-                postman.classList.add('walking'); // Beine wackeln
-                postman.style.left = "50%"; // Läuft zur Mitte
-                postman.style.transform = "translateX(-50%)";
-            }, 3500);
+                postman.style.left = "15%"; // Startposition beim Truck
+                
+                // Kurze Pause, dann loslaufen
+                setTimeout(() => {
+                    postman.classList.add('walking'); // Kopf dreht sich nach rechts, Beine bewegen sich
+                    postman.style.left = "50%"; // Läuft zur Mitte
+                    postman.style.transform = "translateX(-50%)";
+                }, 500);
+            }, 3000);
 
-            // Ankunft in Mitte (nach 6.5s)
+            // 3. Ankunft in Mitte (nach 7.5s - Laufzeit + Wartezeit)
             setTimeout(() => {
-                postman.classList.remove('walking'); // Stoppt
-                document.querySelector('.bubble').style.opacity = "1";
-            }, 6500);
+                postman.classList.remove('walking'); // Hört auf zu laufen
+                postman.classList.add('stopped'); // Dreht Kopf nach vorne zu dir
+                
+                // Sprechblase kommt kurz danach
+                setTimeout(() => {
+                    document.querySelector('.bubble').style.opacity = "1";
+                }, 800);
+            }, 7500);
         }
 
-        function showLetter() {
-            document.getElementById('letter-overlay').style.display = 'flex';
-        }
-
+        function showLetter() { document.getElementById('letter-overlay').style.display = 'flex'; }
         function openCard() {
-            const card = document.getElementById('card');
-            card.classList.add('open');
+            document.getElementById('card').classList.add('open');
             document.getElementById('heart-cover').style.display = 'none';
         }
-
         function closeCard() {
-            const card = document.getElementById('card');
-            card.classList.remove('open');
+            document.getElementById('card').classList.remove('open');
             document.getElementById('heart-cover').style.display = 'block';
             setTimeout(() => { document.getElementById('letter-overlay').style.display = 'none'; }, 300);
         }
