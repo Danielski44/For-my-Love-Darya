@@ -2,66 +2,45 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sammle Momente</title>
     <style>
         body { background-color: #fff5f6; margin: 0; overflow: hidden; font-family: sans-serif; text-align: center; touch-action: none; }
-        h2 { color: #ff4d6d; font-size: 2rem; margin-top: 20px; z-index: 50; position: relative; pointer-events: none; }
-        .game-area { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+        h2 { color: #ff4d6d; position: relative; z-index: 100; margin-top: 20px; }
         .moment {
             position: absolute; width: 180px; height: 180px; object-fit: cover; 
-            border-radius: 20px; border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            cursor: grab; user-select: none; touch-action: none; transition: opacity 0.4s;
+            border-radius: 20px; border: 5px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            cursor: grab; transition: opacity 0.4s;
         }
+        /* Extrem langsame Gleit-Animationen */
+        .slow1 { animation: glide1 50s infinite linear alternate; }
+        .slow2 { animation: glide2 60s infinite linear alternate; }
+        .slow3 { animation: glide3 45s infinite linear alternate; }
 
-        /* Sehr langsame Animationen (18s - 25s) */
-        .v-slow1 { animation: wild1 18s infinite linear; }
-        .v-slow2 { animation: wild2 22s infinite linear; }
-        .v-slow3 { animation: wild3 25s infinite linear; }
+        @keyframes glide1 { 0% { top: 10%; left: 10%; } 100% { top: 70%; left: 70%; } }
+        @keyframes glide2 { 0% { top: 60%; left: 5%; } 100% { top: 10%; left: 75%; } }
+        @keyframes glide3 { 0% { top: 40%; left: 80%; } 100% { top: 80%; left: 10%; } }
 
-        @keyframes wild1 {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(40vw, 10vh) rotate(90deg); }
-            50% { transform: translate(5vw, 40vh) rotate(180deg); }
-            75% { transform: translate(-5vw, 15vh) rotate(270deg); }
-            100% { transform: translate(0, 0) rotate(360deg); }
-        }
-        @keyframes wild2 {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(-30vw, 30vh) rotate(-120deg); }
-            66% { transform: translate(25vw, -5vh) rotate(120deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-        @keyframes wild3 {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(30vw, 30vh) scale(1.05); }
-            100% { transform: translate(0, 0); }
-        }
-
-        .dragging { cursor: grabbing; z-index: 1000 !important; animation: none !important; transform: scale(1.1) !important; }
+        .dragging { z-index: 1000 !important; animation: none !important; cursor: grabbing; }
         .found { opacity: 0; transform: scale(0) !important; pointer-events: none; }
-        #next-btn {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #ff4d6d; color: white; padding: 25px 60px; border-radius: 60px;
-            text-decoration: none; font-size: 2rem; z-index: 2000; box-shadow: 0 15px 40px rgba(255, 77, 109, 0.5);
-        }
+        #next-btn { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff4d6d; color: white; padding: 25px 50px; border-radius: 60px; text-decoration: none; font-size: 2rem; z-index: 2000; }
     </style>
 </head>
 <body>
-    <h2>Finde alle 10 Momente! (<span id="count">0</span>/10)</h2>
-    <div class="game-area">
-        <img src="1.jpeg" class="moment v-slow1" style="top:20%; left:20%;" onpointerdown="startDrag(event)">
-        <img src="2.jpeg" class="moment v-slow2" style="top:40%; left:70%;" onpointerdown="startDrag(event)">
-        <img src="3.jpeg" class="moment v-slow3" style="top:10%; left:50%;" onpointerdown="startDrag(event)">
-        <img src="4.jpeg" class="moment v-slow1" style="top:70%; left:10%;" onpointerdown="startDrag(event)">
-        <img src="5.jpeg" class="moment v-slow2" style="top:50%; left:30%;" onpointerdown="startDrag(event)">
-        <img src="6.jpeg" class="moment v-slow3" style="top:80%; left:80%;" onpointerdown="startDrag(event)">
-        <img src="7.jpeg" class="moment v-slow1" style="top:30%; left:80%;" onpointerdown="startDrag(event)">
-        <img src="8.jpeg" class="moment v-slow2" style="top:10%; left:10%;" onpointerdown="startDrag(event)">
-        <img src="9.jpeg" class="moment v-slow3" style="top:60%; left:50%;" onpointerdown="startDrag(event)">
-        <img src="10.jpeg" class="moment v-slow1" style="top:80%; left:40%;" onpointerdown="startDrag(event)">
+    <h2>Fange alle 10 Momente! (<span id="count">0</span>/10)</h2>
+    <div id="game">
+        <img src="1.jpeg" class="moment slow1" style="top:10%; left:10%;" onpointerdown="startDrag(event)">
+        <img src="2.jpeg" class="moment slow2" style="top:20%; left:60%;" onpointerdown="startDrag(event)">
+        <img src="3.jpeg" class="moment slow3" style="top:50%; left:15%;" onpointerdown="startDrag(event)">
+        <img src="4.jpeg" class="moment slow1" style="top:70%; left:65%;" onpointerdown="startDrag(event)">
+        <img src="5.jpeg" class="moment slow2" style="top:40%; left:40%;" onpointerdown="startDrag(event)">
+        <img src="6.jpeg" class="moment slow3" style="top:5%; left:45%;" onpointerdown="startDrag(event)">
+        <img src="7.jpeg" class="moment slow1" style="top:60%; left:85%;" onpointerdown="startDrag(event)">
+        <img src="8.jpeg" class="moment slow2" style="top:80%; left:25%;" onpointerdown="startDrag(event)">
+        <img src="9.jpeg" class="moment slow3" style="top:5%; left:80%;" onpointerdown="startDrag(event)">
+        <img src="10.jpeg" class="moment slow1" style="top:35%; left:75%;" onpointerdown="startDrag(event)">
     </div>
-    <a href="video.html" id="next-btn">Geschafft! ❤️</a>
+    <a href="video.html" id="next-btn">Weiter ❤️</a>
 
     <script>
         let count = 0;
@@ -76,20 +55,18 @@
             const rect = activeElement.getBoundingClientRect();
             startPos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
             activeElement.setPointerCapture(e.pointerId);
-            
             activeElement.onpointermove = (ev) => {
                 if (!activeElement) return;
                 activeElement.style.left = (ev.clientX - startPos.x) + 'px';
                 activeElement.style.top = (ev.clientY - startPos.y) + 'px';
+                activeElement.style.margin = "0";
             };
-
             activeElement.onpointerup = (ev) => {
                 const duration = Date.now() - startTime;
                 activeElement.releasePointerCapture(ev.pointerId);
                 activeElement.classList.remove('dragging');
                 if (duration < 250) collect(activeElement);
                 activeElement.onpointermove = null;
-                activeElement.onpointerup = null;
                 activeElement = null;
             };
         }
